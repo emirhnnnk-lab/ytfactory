@@ -1,0 +1,52 @@
+{
+ "id": "004-crosswalk",
+ "lang": "en",
+ "voice": "en-US-GuyNeural",
+ "rate": "+0%",
+ "title": "Expensive cars stop less for pedestrians",
+ "sources": [
+  "Piff, Stancato, Cote, Mendoza-Denton, Keltner (2012). Higher social class predicts increased unethical behavior. PNAS 109(11):4086-4091. doi:10.1073/pnas.1118373109. PMC3306667.",
+  "Study 2 (full text, PMC): 152 drivers, marked crosswalk of a busy one-way road, San Francisco Bay Area, June 2011; confederate pedestrian waiting to cross; vehicle status coded 1-5 by make, age, appearance; 34.9% failed to yield; higher vehicle status significantly predicted not yielding (b=0.39, P<0.05). Study 1: 274 drivers, four-way stop, 12.4% cut off other vehicles, also higher in high-status cars."
+ ],
+ "lines": [
+  {
+   "id": "l1",
+   "text": "The more expensive the car, the less likely it is to stop for you.",
+   "gap": 0.4
+  },
+  {
+   "id": "l2",
+   "text": "That is a published finding.",
+   "gap": 0.3
+  },
+  {
+   "id": "l3",
+   "text": "In California, psychologists placed a pedestrian at a marked crosswalk."
+  },
+  {
+   "id": "l4",
+   "text": "They watched one hundred fifty two drivers and rated every car, from old and cheap to new and luxurious."
+  },
+  {
+   "id": "l5",
+   "text": "About one in three drivers did not stop."
+  },
+  {
+   "id": "l6",
+   "text": "And the fancier the car, the more likely the driver was to drive straight through.",
+   "gap": 0.2
+  },
+  {
+   "id": "l6b",
+   "text": "Even after accounting for the driver's age, sex, and the time of day."
+  },
+  {
+   "id": "l7",
+   "text": "The researchers' idea: wealth makes the rules feel optional."
+  },
+  {
+   "id": "l8",
+   "text": "They call it the entitlement of the upper class."
+  }
+ ]
+}

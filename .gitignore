@@ -1,0 +1,5 @@
+node_modules/
+videos/*/audio_*/
+videos/*/out/
+.env
+__pycache__/
