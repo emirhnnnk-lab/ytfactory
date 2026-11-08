@@ -139,6 +139,7 @@ function validate(spec, script) {
 // ---------- visual quality checks (soft: fed back to the model, logged if it cannot fix them) ----------
 // Which spoken words make an object a sensible picture for a line. No match = the object is probably decoration.
 const MEANS = {
+  slot: 'gambl slot casino bet jackpot near-miss nearmiss win spin luck chance', star: 'reward success best top win prize praise rating', battery: 'energy tired fatigue sleep rest exhaust power burnout', target: 'goal target focus aim attention accura precis',
   car: 'car driv vehicle traffic road crosswalk brak', coin: 'money pay cash price win rich wealth cost dollar gambl bet coin reward',
   money: 'money pay cash price win rich wealth cost dollar gambl bet salary income reward', house: 'home house neighbo famil',
   book: 'book read study learn student lecture school class', gift: 'gift present give', phone: 'phone call mobile screen text app',

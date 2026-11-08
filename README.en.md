@@ -89,9 +89,9 @@ python src/ajan.py --slug 960-boot --kaynak product_description.txt --atif "Bran
 In all three videos the checker let at least one overgeneralization through. To be honest, **this agent is not ready to publish without a human check**, so the publishing decision stays with me.
 
 ## Drawing vocabulary and styles
-The first version had 9 elements, and for topics like sleep, attention or money the agent could not find the right image and fell back to text. Now there are 14 scene elements and 20 objects:
+The first version had 9 elements, and for topics like sleep, attention or money the agent could not find the right image and fell back to text. Now there are 15 scene elements (including the product photo) and 24 objects:
 - **Scene elements:** title, stamp, label, person, walking person, row, counter, cross, speech bubble, icon, chart (rising / falling / bars), split comparison, two people facing each other, crowd
-- **Objects:** car, money, house, book, gift, phone, clock, brain, heart, light bulb, lock, trophy, scale, globe, banknote, pill, bed, laptop, pen, eye
+- **Objects:** car, money, house, book, gift, phone, clock, brain, heart, light bulb, lock, trophy, scale, globe, banknote, pill, bed, laptop, pen, eye, slot machine, star, battery, target
 
 Scene code never picks colors or fonts; it only asks the style (`src/render/styles.js`). That is why every object looks right in all 6 styles without extra tuning: `gece`, `lino`, `kesik`, `neon`, `gazete`, `plan`.
 

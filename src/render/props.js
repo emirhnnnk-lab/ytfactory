@@ -45,6 +45,21 @@ const PROPS = {
     return glow(st, lit) + g(s, `<rect x="-90" y="-80" width="180" height="116" rx="10" ${p.mass}/><rect x="-76" y="-66" width="152" height="88" rx="4" ${lit ? p.aFill : p.card}/><path d="M-118,44 H118 L104,64 H-104Z" ${p.mass}/>`, p); },
   pen: (st, s, lit, t) => { const p = paint(st);
     return g(s, `<g transform="rotate(-40)"><rect x="-16" y="-96" width="32" height="150" rx="6" ${lit ? p.aFill : p.mass}/><path d="M-16,54 L0,92 L16,54Z" ${p.card}/><rect x="-16" y="-96" width="32" height="26" ${p.card}/></g>`, p); },
+  // soyut kavramlar için (08.11): kumar/şans, ödül, enerji/yorgunluk, hedef/odak
+  slot: (st, s, lit, t) => { const p = paint(st), sp = Math.floor(t * 9);
+    const sym = i => ['7', '★', '7', '♦'][(sp + i * (lit ? 0 : 1)) % 4];
+    return glow(st, lit) + g(s, `<rect x="-90" y="-80" width="180" height="150" rx="16" ${p.mass}/><rect x="-74" y="-56" width="148" height="80" rx="8" ${p.card}/>`
+      + [-48, 0, 48].map((x, i) => `<text x="${x}" y="2" font-family="${st.font.title}" font-size="46" text-anchor="middle" fill="${lit ? st.accent : st.ink}">${sym(i)}</text>`).join('')
+      + `<path d="M90,-40 h18 v60" ${p.limb(8)}/><circle cx="108" cy="-50" r="12" ${p.aFill}/><rect x="-60" y="40" width="120" height="14" rx="6" ${p.dFill}/>`, p); },
+  star: (st, s, lit, t) => { const p = paint(st), r = 1 + .05 * Math.sin(t * 5);
+    const pts = Array.from({ length: 10 }, (_, i) => { const a = -Math.PI / 2 + i * Math.PI / 5, R = i % 2 ? 36 : 88; return `${Math.cos(a) * R},${Math.sin(a) * R}`; }).join(' ');
+    return glow(st, lit) + g(s * r, `<polygon points="${pts}" ${lit ? p.aFill : p.mass}/>`, p); },
+  battery: (st, s, lit, t) => { const p = paint(st), lvl = lit ? 1 : .25;
+    return g(s, `<rect x="-90" y="-46" width="170" height="92" rx="14" ${p.card}/><rect x="-90" y="-46" width="170" height="92" rx="14" fill="none" stroke="${st.ink}" stroke-width="9"/><rect x="82" y="-18" width="16" height="36" rx="4" ${p.mass}/>`
+      + `<rect x="-76" y="-32" width="${142 * lvl}" height="64" rx="6" ${lit ? p.aFill : p.mass}/>`, p); },
+  target: (st, s, lit, t) => { const p = paint(st);
+    return g(s, [84, 58, 32].map((r, i) => `<circle r="${r}" ${i % 2 ? p.card : (lit && i === 2 ? p.aFill : p.mass)}/>`).join('') + `<circle r="10" ${p.aFill}/>`
+      + (lit ? `<path d="M120,-120 L8,-8" ${p.aStroke(8)}/><path d="M120,-120 l-4,22 m4,-22 l-22,4" ${p.aStroke(8)}/>` : ''), p); },
   eye: (st, s, lit, t) => { const p = paint(st), look = Math.sin(t * 1.3) * 14;
     return glow(st, lit) + g(s, `<path d="M-100,0 Q0,-80 100,0 Q0,80 -100,0Z" ${p.card}/><circle cx="${look}" r="34" ${lit ? p.aFill : p.mass}/><circle cx="${look + 10}" cy="-10" r="9" fill="${st.paper}"/>`, p); },
 };

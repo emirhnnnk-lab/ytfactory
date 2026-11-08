@@ -89,9 +89,9 @@ python src/ajan.py --slug 960-bot --kaynak urun_aciklamasi.txt --atif "Marka" --
 Üç videonun üçünde de denetçi en az bir aşırı genellemeyi geçirdi. Açıkçası **bu ajan insan kontrolü olmadan yayın yapacak seviyede değil**; o yüzden yayın kararı bende kalıyor.
 
 ## Çizim dağarcığı ve stiller
-İlk sürümde ajanın elinde 9 öğe vardı ve uyku, dikkat, para gibi konularda doğru görseli bulamayıp her şeyi yazıyla geçiştiriyordu. Şu an 14 sahne öğesi ve 20 nesne var:
+İlk sürümde ajanın elinde 9 öğe vardı ve uyku, dikkat, para gibi konularda doğru görseli bulamayıp her şeyi yazıyla geçiştiriyordu. Şu an 15 sahne öğesi (ürün fotoğrafı dahil) ve 24 nesne var:
 - **Sahne öğeleri:** başlık, damga, etiket, kişi, yürüyen kişi, sıra, sayaç, çarpı, balon, ikon, grafik (yükselen / düşen / çubuk), ikiye bölünmüş karşılaştırma, karşılıklı iki kişi, kalabalık
-- **Nesneler:** araba, para, ev, kitap, hediye, telefon, saat, beyin, kalp, ampul, kilit, kupa, terazi, dünya, banknot, hap, yatak, laptop, kalem, göz
+- **Nesneler:** araba, para, ev, kitap, hediye, telefon, saat, beyin, kalp, ampul, kilit, kupa, terazi, dünya, banknot, hap, yatak, laptop, kalem, göz, slot makinesi, yıldız, pil, hedef
 
 Sahne kodu renk ya da font seçmiyor, sadece stile soruyor (`src/render/styles.js`). Bu yüzden her nesne 6 stilin hepsinde ayrı ayar gerekmeden doğru görünüyor: `gece`, `lino`, `kesik`, `neon`, `gazete`, `plan`.
 
