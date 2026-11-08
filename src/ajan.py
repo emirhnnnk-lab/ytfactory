@@ -22,7 +22,23 @@ def log(adim, **k):
     print(f"[{adim}] " + " ".join(f"{a}={str(b)[:120]}" for a, b in k.items()), flush=True)
 
 
+SON_MODEL = [None]
+
+
+def bosalt(model):
+    """Modeli Ollama belleğinden hemen çıkar. 16 GB RAM + 4 GB GPU'da 7B ve 14B aynı anda sığmıyor;
+    ikisi birden yüklü kalınca Ollama 500 dönüyordu."""
+    try:
+        urllib.request.urlopen(urllib.request.Request("http://localhost:11434/api/generate",
+                               json.dumps({"model": model, "keep_alive": 0}).encode(), {"Content-Type": "application/json"}), timeout=60).read()
+    except Exception:
+        pass
+
+
 def llm(model, sistem, kullanici, sema=None):
+    if SON_MODEL[0] and SON_MODEL[0] != model:
+        bosalt(SON_MODEL[0]); log("model_degisimi", eski=SON_MODEL[0], yeni=model)
+    SON_MODEL[0] = model
     govde = {"model": model, "stream": False, "format": "json", "options": {"temperature": 0.4, "num_ctx": 8192},
              "messages": [{"role": "system", "content": sistem}, {"role": "user", "content": kullanici}]}
     for deneme in range(4):   # Ollama model değiştirirken (7B <-> 14B) bellek yetmeyip 500 dönebiliyor
@@ -112,7 +128,7 @@ Rules:
 
 
 def spec_dogrula(spec, sc):
-    o = subprocess.run(["node", "-e", "const v=require('./src/render/spec').validate;let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const{spec,sc}=JSON.parse(d);console.log(JSON.stringify(v(spec,sc)))})"],
+    o = subprocess.run(["node", "-e", "const S=require('./src/render/spec');let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const{spec,sc}=JSON.parse(d);console.log(JSON.stringify(S.validate(spec,sc).concat(S.visualCheck(spec,sc))))})"],
                        cwd=KOK, input=json.dumps({"spec": spec, "sc": sc}), capture_output=True, text=True, check=True)
     h = json.loads(o.stdout)
     eksik = {l["id"] for l in sc["lines"]} - {s.get("line") for s in spec.get("scenes", [])}
@@ -168,6 +184,11 @@ def tekrar(ad, uret, dogrula, deneme=3):
         if not h:
             return sonuc
         geri = "\n\nYour previous answer had these problems, fix ALL of them and return the full JSON again:\n- " + "\n- ".join(h) + "\n\nPrevious answer:\n" + json.dumps(sonuc, ensure_ascii=False)
+    if ad == "sahne" and h and all(x.startswith("[visual]") for x in h):
+        # görsel uyarılar kural ihlali değil: video yine üretilir, uyarılar insan kontrolü için kayda geçer
+        log(ad, gorsel_uyari=len(h), uyarilar=h)
+        sonuc["_gorsel_uyarilar"] = h
+        return sonuc
     if ad == "senaryo":
         # son çare: denetçinin hâlâ itiraz ettiği satırları at (şüpheli cümleyi tutmaktansa atmak güvenli)
         kotu = {x.split(":")[0] for x in h if re.match(r"l\d+:", x)}

@@ -110,8 +110,45 @@ function validate(spec, script) {
   return errs;
 }
 
+// ---------- visual quality checks (soft: fed back to the model, logged if it cannot fix them) ----------
+// Which spoken words make an object a sensible picture for a line. No match = the object is probably decoration.
+const MEANS = {
+  car: 'car driv vehicle traffic road crosswalk brak', coin: 'money pay cash price win rich wealth cost dollar gambl bet coin reward',
+  money: 'money pay cash price win rich wealth cost dollar gambl bet salary income reward', house: 'home house neighbo famil',
+  book: 'book read study learn student lecture school class', gift: 'gift present give', phone: 'phone call mobile screen text app',
+  clock: 'time hour minute late wait speed fast slow reaction delay', brain: 'brain mind think neural memory attention learn scan cognit circuit reward process',
+  heart: 'love heart feel emotion pleasant stress kind', bulb: 'idea insight learn understand realiz concept discover', lock: 'control secur lock freedom restrict',
+  trophy: 'win prize jackpot success reward best', scale: 'compare fair balance justice versus than', globe: 'world global countr everyone international',
+  pill: 'drug medic pill health treat', bed: 'sleep night rest tired dream', laptop: 'laptop computer typ keyboard', pen: 'pen writ hand note longhand',
+  eye: 'eye see look visual attention notice watch track', house_: '',
+};
+function visualCheck(spec, script) {
+  const warn = [], ids = new Map(script.lines.map(l => [l.id, l.text.toLowerCase()]));
+  const sc = spec.scenes || [];
+  sc.forEach((s, i) => {
+    const txt = ids.get(s.line) || '', words = txt.split(/\s+/).map(L.normW);
+    for (const e of s.elements || []) {
+      if ((e.type === 'icon' || e.type === 'row') && MEANS[e.item] && !MEANS[e.item].split(' ').some(k => txt.includes(k)))
+        warn.push(`[visual] ${s.line}: "${e.item}" has nothing to do with "${ids.get(s.line)}". Pick an object the line talks about, or use a title/split/chart instead`);
+    }
+    // dead air: the first thing on screen appears after more than half of the line is spoken
+    const first = Math.min(...(s.elements || []).map(e => { const k = words.findIndex(w => e.at && w.startsWith(L.normW(e.at))); return k < 0 ? 0 : k; }));
+    if ((s.elements || []).length && words.length > 6 && first > words.length * .5) warn.push(`[visual] ${s.line}: nothing appears until word ${first + 1} of ${words.length}; anchor the first element to an earlier word`);
+    if (!(s.elements || []).length) warn.push(`[visual] ${s.line}: empty scene`);
+  });
+  // variety: the same main element three scenes in a row, or a lone person over and over
+  const main = sc.map(s => ((s.elements || [])[0] || {}).type || '');
+  const runs = [];
+  for (let i = 2; i < main.length; i++) if (main[i] && main[i] === main[i - 1] && main[i] === main[i - 2]) runs.push(sc[i].line);
+  if (runs.length) warn.push(`[visual] "${main[main.indexOf(main.find((m, i) => i >= 2 && m === main[i - 1] && m === main[i - 2]))]}" is the main picture in 3+ scenes in a row (up to ${runs[runs.length - 1]}); vary the pictures`);
+  const lonePerson = sc.filter(s => (s.elements || []).some(e => e.type === 'person') && !(s.elements || []).some(e => ['icon', 'row', 'chart', 'split', 'counter', 'pair', 'crowd'].includes(e.type))).length;
+  if (lonePerson > 2) warn.push(`[visual] ${lonePerson} scenes show only a standing person; replace some with objects, charts, a split or a crowd`);
+  return warn;
+}
+
 module.exports = compile;
 module.exports.validate = validate;
+module.exports.visualCheck = visualCheck;
 module.exports.VOCAB = VOCAB;
 module.exports.ITEMS = Object.keys(ITEMS);
 module.exports.EXPR = EXPR;

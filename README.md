@@ -102,6 +102,25 @@ Kaynaklar PubMed'den çekilen özetler, ajana sadece özet metni verildi:
 
 - **Kaynağın kendisi:** Mueller ve Oppenheimer (2014) çalışmasının sonraki tekrarlarında sonuçlar tutarsız çıktı ve PubMed kaydında bir düzeltme notu var. Ajan sadece özeti gördüğü için bunu bilemez. Hangi kaynağın kullanılacağına insan karar vermeli.
 
+### Görsel kalite kontrolü (08.11)
+**1. Kural katmanı** (`visualCheck` in `src/render/spec.js`). Her sahne tarifine üç kontrol uygulanıyor:
+- **Anlam bağı:** Her nesne için ilgili kelime kökleri tanımlı (terazi → compare, versus, than…). Satırda hiçbiri geçmiyorsa nesne büyük ihtimalle süs. Eski videolarda dünya ikonunu ve kupayı yakaladı. Bir yanlış alarm çıktı ("driving" geçen satırda araba işaretlenmişti), kök düzeltildi.
+- **Çeşitlilik:** Aynı ana görsel 3 sahne üst üste kullanılırsa ya da 2'den fazla sahnede sadece tek bir kişi duruyorsa uyarı.
+- **Ölü süre:** Satırın yarısı söylenene kadar ekranda hiçbir şey belirmiyorsa uyarı.
+
+Uyarılar modele geri bildirim olarak gidiyor. Model düzeltemezse video yine üretiliyor, uyarılar kayda geçiyor.
+
+**2. Görsel model denemesi: yetersiz.** Kareleri yerelde SmolVLM-500M'e tarif ettirdim. Dünya ikonuna "göz küresi" dedi, bir sahnede olmayan bir "belge" uydurdu, kalabalık sahnesinde resmi değil altyazıyı okudu. Bu boyuttaki bir model kare kontrolü için kullanılamaz.
+
+**3. Sonuç: karışık.**
+<img src="docs/910_once_sonra.png" width="640">
+
+- Yanlış görseller gitti ve sahneler çeşitlendi.
+- Ama model yanlış resmin yerine **yazıya kaçtı**: sahneler daha boş, sahibi olmayan bir konuşma balonu var, "beyin taramaları" satırına verisi olmayan bir grafik konmuş. "Near-misses" ekrana tiresiz "NEARMISSES" olarak yazılmış; model metni kelime listesinden kopyalamış.
+- **Kurallar kötü görseli engelliyor ama iyi görsel üretmiyor.** Sıradaki adımlar: soyut kavramlara uygun çizimler (ödül, bağımlılık, karar), verisi olmayan grafiklerin yasaklanması, sahneyi daha güçlü bir modelin kurması.
+
+**4. Bellek sorunu ve kök nedeni.** 14B'nin tekrar tekrar 500 vermesinin nedeni RAM'miş: 16 GB'ın sadece 1 GB'ı boş kalıyordu. Ollama 7B'den 14B'ye geçerken 7B'yi bellekte tutmaya devam ediyordu. Ajan artık model değiştirmeden önce öncekini bellekten çıkarıyor (`keep_alive: 0`). Bu kısmen çözdü: 14B tek başına da RAM'i zorladığı için 500 hataları azaldı ama bitmedi; tekrar deneme sayesinde video yine çıkıyor.
+
 ## Ajanın çizim dağarcığı
 İlk sürümde ajanın elinde 9 öğe vardı: kişi, araba, para, ev, kitap, hediye, sayaç, çarpı ve balon. Trafik çalışmasını anlatmaya yetiyordu, ama uyku, dikkat ya da para gibi konularda ajan doğru görseli bulamayıp her şeyi yazıyla geçiştiriyordu. Şu an 14 sahne öğesi ve 20 nesne var:
 - **Sahne öğeleri:** başlık, damga, etiket, kişi, yürüyen kişi, sıra, sayaç, çarpı, balon, **ikon, grafik (yükselen / düşen / çubuk), ikiye bölünmüş karşılaştırma ekranı, karşılıklı iki kişi, kalabalık**

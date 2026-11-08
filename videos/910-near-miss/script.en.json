@@ -1,29 +1,33 @@
 {
- "title": "Near-Misses in Gambling",
+ "title": "Near-misses in Gambling",
  "lines": [
   {
    "id": "l1",
-   "text": "Surprisingly, near-misses actually make people want to gamble more."
+   "text": "Did you know near-misses in gambling can actually make you want to keep playing?"
   },
   {
    "id": "l2",
-   "text": "Researchers used a simplified slot machine task to study this phenomenon."
+   "text": "Researchers used a simplified slot machine task to study this."
   },
   {
    "id": "l3",
-   "text": "Near-misses, though not winning, still boost the desire to play."
+   "text": "Near-misses, though not winning, still boost your desire to play."
   },
   {
    "id": "l4",
-   "text": "This effect is stronger when the player feels they had control."
+   "text": "This effect is stronger when you have control over the outcome."
   },
   {
    "id": "l5",
-   "text": "Brain scans show near-misses activate reward areas, like wins do."
+   "text": "Brain scans show near-misses activate the same reward areas as wins."
   },
   {
    "id": "l6",
-   "text": "This activity correlates with higher gambling propensity, as shown by self-reports."
+   "text": "These findings help explain why near-misses feel so compelling in gambling."
+  },
+  {
+   "id": "l7",
+   "text": "Understanding this can help us better grasp gambling behaviors."
   }
  ],
  "id": "910-near-miss",

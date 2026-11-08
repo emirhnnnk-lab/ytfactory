@@ -4,18 +4,12 @@
    "line": "l1",
    "elements": [
     {
-     "type": "person",
-     "at": "Surprisingly",
-     "pos": "center",
-     "expr": "surprised"
-    },
-    {
-     "type": "icon",
-     "item": "trophy",
+     "type": "title",
+     "text": "nearmisses",
      "at": "nearmisses",
-     "pos": "left",
-     "y": "low",
-     "lit_at": "more"
+     "pos": "center",
+     "y": "top",
+     "accent": true
     }
    ]
   },
@@ -24,17 +18,15 @@
    "elements": [
     {
      "type": "person",
-     "at": "Researchers",
+     "at": "researchers",
+     "expr": "neutral",
      "pos": "right",
-     "expr": "neutral"
+     "mood_at": "used"
     },
     {
-     "type": "icon",
-     "item": "globe",
-     "at": "slot",
-     "pos": "left",
-     "y": "low",
-     "lit_at": "task"
+     "type": "title",
+     "text": "slot",
+     "at": "slot"
     }
    ]
   },
@@ -42,18 +34,10 @@
    "line": "l3",
    "elements": [
     {
-     "type": "person",
-     "at": "Near-misses",
-     "pos": "center",
-     "expr": "neutral"
-    },
-    {
-     "type": "icon",
-     "item": "trophy",
-     "at": "not",
-     "pos": "right",
-     "y": "low",
-     "lit_at": "play"
+     "type": "bubble",
+     "text": "nearmisses",
+     "at": "nearmisses",
+     "pos": "bottom"
     }
    ]
   },
@@ -61,16 +45,12 @@
    "line": "l4",
    "elements": [
     {
-     "type": "person",
-     "at": "This",
-     "pos": "center",
-     "expr": "neutral"
-    },
-    {
-     "type": "bubble",
-     "text": "control",
-     "at": "control",
-     "pos": "right"
+     "type": "pair",
+     "at": "effect",
+     "expr_left": "strong",
+     "expr_right": "weak",
+     "talk": "right",
+     "mood_at": "control"
     }
    ]
   },
@@ -78,18 +58,15 @@
    "line": "l5",
    "elements": [
     {
-     "type": "person",
-     "at": "Brain",
-     "pos": "center",
-     "expr": "neutral"
-    },
-    {
-     "type": "icon",
-     "item": "brain",
-     "at": "areas",
-     "pos": "right",
-     "y": "low",
-     "lit_at": "wins"
+     "type": "chart",
+     "kind": "up",
+     "values": [
+      60,
+      100
+     ],
+     "at": "nearmisses",
+     "until": "wins",
+     "label": "reward areas"
     }
    ]
   },
@@ -97,15 +74,35 @@
    "line": "l6",
    "elements": [
     {
-     "type": "person",
-     "at": "This",
+     "type": "crowd",
+     "n": 5,
+     "at": "nearmisses",
+     "highlight": 3,
+     "highlight_at": "compelling"
+    }
+   ]
+  },
+  {
+   "line": "l7",
+   "elements": [
+    {
+     "type": "title",
+     "text": "understanding",
+     "at": "understanding",
      "pos": "center",
-     "expr": "neutral"
+     "y": "top",
+     "accent": true
+    },
+    {
+     "type": "stamp",
+     "text": "grasp",
+     "at": "grasp"
     }
    ]
   }
  ],
  "_onarim": [
-  "l6: sayılmayan satırda sayaç -> çıkarıldı"
+  "l2: nesne \"slot\" yok -> başlık",
+  "l3: sayılmayan satırda sayaç -> çıkarıldı"
  ]
 }

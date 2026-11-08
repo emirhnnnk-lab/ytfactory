@@ -1,116 +1,144 @@
 [
  {
+  "adim": "model_degisimi",
+  "t": 1794132823.4,
+  "eski": "qwen2.5:7b",
+  "yeni": "qwen2.5:14b"
+ },
+ {
   "adim": "ollama_hata",
-  "t": 1794130378.3,
+  "t": 1794132936.1,
   "hata": 500,
   "model": "qwen2.5:14b",
   "deneme": 1
  },
  {
   "adim": "ollama_hata",
-  "t": 1794130463.8,
+  "t": 1794133024.4,
   "hata": 500,
   "model": "qwen2.5:14b",
   "deneme": 2
  },
  {
-  "adim": "ollama_hata",
-  "t": 1794130575.2,
-  "hata": 500,
-  "model": "qwen2.5:14b",
-  "deneme": 3
- },
- {
   "adim": "senaryo",
-  "t": 1794130723.8,
+  "t": 1794133146.0,
   "deneme": 1,
   "hata": 1,
   "onarim": 0,
   "ilk": [
-   "l6: not supported by SOURCE (The source does not make a direct claim about the relationship between brain activity and continued play behavior.)"
+   "l6: not supported by SOURCE (The source does not explicitly state that near-misses feel addictive; it only describes the neural and behavioral effects of near-misses.)"
   ],
   "onarimlar": []
  },
  {
-  "adim": "senaryo",
-  "t": 1794130907.1,
-  "deneme": 2,
-  "hata": 1,
-  "onarim": 0,
-  "ilk": [
-   "l7: not supported by SOURCE (The line makes a broader claim about understanding gambling addiction, which is not directly supported by the specific findings of the study.)"
-  ],
-  "onarimlar": []
+  "adim": "model_degisimi",
+  "t": 1794133148.1,
+  "eski": "qwen2.5:14b",
+  "yeni": "qwen2.5:7b"
+ },
+ {
+  "adim": "model_degisimi",
+  "t": 1794133193.8,
+  "eski": "qwen2.5:7b",
+  "yeni": "qwen2.5:14b"
  },
  {
   "adim": "ollama_hata",
-  "t": 1794131060.8,
+  "t": 1794133295.2,
   "hata": 500,
   "model": "qwen2.5:14b",
   "deneme": 1
  },
  {
   "adim": "ollama_hata",
-  "t": 1794131145.7,
+  "t": 1794133381.1,
   "hata": 500,
   "model": "qwen2.5:14b",
   "deneme": 2
  },
  {
   "adim": "ollama_hata",
-  "t": 1794131248.9,
+  "t": 1794133480.5,
   "hata": 500,
   "model": "qwen2.5:14b",
   "deneme": 3
  },
  {
   "adim": "senaryo",
-  "t": 1794131394.0,
-  "deneme": 3,
-  "hata": 1,
+  "t": 1794133616.1,
+  "deneme": 2,
+  "hata": 0,
   "onarim": 0,
-  "ilk": [
-   "l7: not supported by SOURCE (The line is incomplete and does not provide a full claim to evaluate based on the source.)"
-  ],
+  "ilk": [],
   "onarimlar": []
  },
  {
-  "adim": "senaryo",
-  "t": 1794131394.0,
-  "son_care": "1 satır çıkarıldı",
-  "satirlar": [
-   "l7"
+  "adim": "model_degisimi",
+  "t": 1794133618.3,
+  "eski": "qwen2.5:14b",
+  "yeni": "qwen2.5:7b"
+ },
+ {
+  "adim": "sahne",
+  "t": 1794133704.4,
+  "deneme": 1,
+  "hata": 3,
+  "onarim": 3,
+  "ilk": [
+   "[visual] l1: \"trophy\" has nothing to do with \"did you know near-misses in gambling can actually make you want to keep playing?\". Pick an object the line talks about, or use a title/split/chart instead",
+   "[visual] l1: \"trophy\" has nothing to do with \"did you know near-misses in gambling can actually make you want to keep playing?\". Pick an object the line talks about, or use a title/split/chart instead",
+   "[visual] l3: empty scene"
+  ],
+  "onarimlar": [
+   "l2: nesne \"slot\" yok -> başlık",
+   "l3: sayılmayan satırda sayaç -> çıkarıldı",
+   "l7: nesne \"lightbulb\" yok -> başlık"
   ]
  },
  {
   "adim": "sahne",
-  "t": 1794131495.2,
-  "deneme": 1,
+  "t": 1794133772.2,
+  "deneme": 2,
+  "hata": 1,
+  "onarim": 2,
+  "ilk": [
+   "[visual] l3: empty scene"
+  ],
+  "onarimlar": [
+   "l2: nesne \"slot\" yok -> başlık",
+   "l3: sayılmayan satırda sayaç -> çıkarıldı"
+  ]
+ },
+ {
+  "adim": "sahne",
+  "t": 1794133836.2,
+  "deneme": 3,
   "hata": 0,
-  "onarim": 1,
+  "onarim": 2,
   "ilk": [],
   "onarimlar": [
-   "l6: sayılmayan satırda sayaç -> çıkarıldı"
+   "l2: nesne \"slot\" yok -> başlık",
+   "l3: sayılmayan satırda sayaç -> çıkarıldı"
   ]
  },
  {
   "adim": "ses",
-  "t": 1794131500.0,
+  "t": 1794133840.4,
   "tamam": true
  },
  {
   "adim": "kareler",
-  "t": 1794131507.0,
-  "saniyeler": "2.5,8.8,15.1,21.4"
+  "t": 1794133846.1,
+  "saniyeler": "2.8,9.7,16.6,23.5"
  },
  {
   "adim": "video",
-  "t": 1794131842.9,
-  "sure_sn": 25.1
+  "t": 1794134046.1,
+  "sure_sn": 27.6
  },
  {
   "adim": "bitti",
-  "t": 1794131842.9,
-  "toplam_sn": 1620
+  "t": 1794134046.1,
+  "toplam_sn": 1274
  }
 ]
