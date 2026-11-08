@@ -60,18 +60,11 @@ Bir video bu bilgisayarda (GTX 1650, 4 GB) yaklaşık 12-27 dakika sürüyor.
 
 **2. Model inat etti, kod onardı.** Sahne tarifinde model animasyonları "were observed" gibi kelime gruplarına bağladı. Kontrol yakaladı, ama model 3 denemede de düzeltmedi. İki şey yaptım: prompta her satırda kullanabileceği kelimelerin listesini koydum, ve grubun satırda geçen ilk kelimesini seçen bir onarım adımı yazdım. Benzer şekilde, kütüphanede olmayan nesneler ("billboard", "slot") istediğinde artık o kelimeyi ekrana yazan bir başlığa dönüşüyor; anlam kaybolmuyor.
 
-**3. Hiçbir kontrolün yakalamadığı, gözümün yakaladığı hatalar.** İlk videonun karelerine bakınca üç şey gördüm:
-- Ekranda kaynakta olmayan bir **%75** vardı. Kelime temizleme kodu "34.9%"daki noktayı silip "349" yapıyordu. Artık sayaç sadece satırda söylenen bir sayıyı gösterebiliyor ve ondalık destekliyor.
-- Altyazı "34.9"daki noktayı cümle sonu sanıp ekrana tek başına "9%" yazdı. İki rakam arasındaki nokta artık bölünmüyor.
-- Araba sırası kişinin kafasına bindi. Kişi varken artık üstte duruyor.
+**3. Bazı hataları sadece bakan bir göz yakalıyor.** İlk videonun karelerinde kaynakta olmayan bir sayı ve yanlış bölünmüş bir altyazı vardı; hiçbiri otomatik kontrollere takılmamıştı. Kontrol kareleri adımını bu yüzden ekledim; yayından önce insan bakıyor.
 
-"Kontrol kareleri" adımı bu yüzden var: bazı hataları sadece bakan bir göz yakalıyor.
+**4. Denetçi de tutarsız.** Bir videoda aşırı genellemeyi kaçırdı, diğerinde kaynakta aynen geçen doğru bir cümleyi reddetti. Son çare olarak şunu ekledim: son denemede hâlâ işaretli satır varsa, en az 5 satır kalmak şartıyla o satır atılıyor. Şüpheli bir cümleyi tutmaktansa atmak daha güvenli.
 
-**4. Kök neden RAM'miş.** Model sunucusu ara ara "500" hatası veriyordu. Önce yeniden deneme ekledim, yetmedi. Asıl sebep 16 GB RAM'in sadece 1 GB'ının boş kalmasıymış: 7B'den 14B'ye geçerken eski model bellekte kalıyordu. Ajan artık model değiştirmeden önce eskisini bellekten çıkarıyor. Hatalar azaldı ama bitmedi; 14B bu bilgisayarı tek başına da zorluyor.
-
-**5. Denetçi de tutarsız.** Bir videoda aşırı genellemeyi kaçırdı, diğerinde kaynakta aynen geçen doğru bir cümleyi reddetti. Son çare olarak şunu ekledim: son denemede hâlâ işaretli satır varsa, en az 5 satır kalmak şartıyla o satır atılıyor. Şüpheli bir cümleyi tutmaktansa atmak daha güvenli.
-
-**6. Kurallar kötü görseli engelledi, iyisini üretmedi.** "Satırla alakasız görsel seçme", "aynı görseli üst üste kullanma", "satır başında ekran boş kalmasın" kurallarını ekledim. Yanlış görseller gitti (kumar sahnesindeki dünya ikonu gibi). Ama model bu sefer yazıya kaçtı: sahneler boşaldı, verisi olmayan bir grafik çıktı, "near-misses" ekrana tiresiz yazıldı. Kareleri küçük bir görsel modele (SmolVLM-500M) kontrol ettirmeyi de denedim; dünya ikonuna "göz küresi" dedi. Bu boyuttaki bir model bu iş için kullanılamaz.
+**5. Kurallar kötü görseli engelledi, iyisini üretmedi.** "Satırla alakasız görsel seçme", "aynı görseli üst üste kullanma", "satır başında ekran boş kalmasın" kurallarını ekledim. Yanlış görseller gitti (kumar sahnesindeki dünya ikonu gibi). Ama model bu sefer yazıya kaçtı: sahneler boşaldı, verisi olmayan bir grafik çıktı, "near-misses" ekrana tiresiz yazıldı. Kareleri küçük bir görsel modele (SmolVLM-500M) kontrol ettirmeyi de denedim; dünya ikonuna "göz küresi" dedi. Bu boyuttaki bir model bu iş için kullanılamaz.
 
 <img src="docs/910_once_sonra.png" width="640">
 

@@ -60,18 +60,11 @@ One video takes about 12-27 minutes on this computer (GTX 1650, 4 GB).
 
 **2. The model was stubborn, so code repaired it.** In the scene recipe, the model tied animations to word groups like "were observed". The check caught it, but the model failed to fix it in 3 tries. I did two things: I put the list of allowed words for each line into the prompt, and I wrote a repair step that picks the first word of the group that appears in the line. In the same way, when it asks for objects that are not in the library ("billboard", "slot"), they now become a title that shows that word on screen, so the meaning is kept.
 
-**3. Errors no check caught, but my eyes did.** Looking at the frames of the first video, I found three things:
-- There was a **75%** on screen that is not in the source. The word-cleaning code removed the dot in "34.9%" and made it "349". Now the counter can only show a number that is said in the line, and it supports decimals.
-- The subtitle took the dot in "34.9" as the end of a sentence and showed "9%" on its own. A dot between two digits is no longer split.
-- A row of cars sat on top of a person's head. When a person is on screen, the row now goes to the top.
+**3. Some errors are only caught by a human eye.** The first video's frames had a number that wasn't in the source and a wrongly split subtitle; none of them were caught by the automatic checks. That's why I added the check-frames step; a human looks before anything is published.
 
-That is why the "check frames" step exists: some errors are only caught by someone looking.
+**4. The checker is inconsistent too.** In one video it missed an overgeneralization; in another it rejected a correct sentence that was word for word in the source. As a last resort I added this: if lines are still flagged on the final try, they are removed, as long as at least 5 lines remain. Dropping a suspicious sentence is safer than keeping it.
 
-**4. The root cause was RAM.** The model server kept returning "500" errors. First I added retries; that was not enough. The real cause: only 1 GB of my 16 GB RAM was free, because the old model stayed in memory when switching from 7B to 14B. The agent now unloads the previous model before switching. The errors dropped but did not disappear; 14B alone pushes this computer hard.
-
-**5. The checker is inconsistent too.** In one video it missed an overgeneralization; in another it rejected a correct sentence that was word for word in the source. As a last resort I added this: if lines are still flagged on the final try, they are removed, as long as at least 5 lines remain. Dropping a suspicious sentence is safer than keeping it.
-
-**6. Rules stopped bad images but did not create good ones.** I added rules like "don't pick images unrelated to the line", "don't repeat the same image back to back" and "don't leave the screen empty at the start of a line". The wrong images went away (like the globe icon in the gambling scene). But the model then escaped into text: scenes got emptier, a chart appeared with no data, and "near-misses" was written without the hyphen. I also tried letting a small vision model (SmolVLM-500M) check the frames; it called the globe icon an "eyeball". A model that size cannot do this job.
+**5. Rules stopped bad images but did not create good ones.** I added rules like "don't pick images unrelated to the line", "don't repeat the same image back to back" and "don't leave the screen empty at the start of a line". The wrong images went away (like the globe icon in the gambling scene). But the model then escaped into text: scenes got emptier, a chart appeared with no data, and "near-misses" was written without the hyphen. I also tried letting a small vision model (SmolVLM-500M) check the frames; it called the globe icon an "eyeball". A model that size cannot do this job.
 
 <img src="docs/910_once_sonra.png" width="640">
 
