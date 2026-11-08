@@ -1,0 +1,106 @@
+{
+ "scenes": [
+  {
+   "line": "l1",
+   "elements": [
+    {
+     "type": "person",
+     "at": "Surprisingly",
+     "pos": "center",
+     "expr": "surprised",
+     "mood_at": "typing"
+    },
+    {
+     "type": "icon",
+     "item": "laptop",
+     "at": "laptop",
+     "pos": "right",
+     "y": "mid",
+     "lit_at": "effective",
+     "tilt": 0.1
+    }
+   ]
+  },
+  {
+   "line": "l2",
+   "elements": [
+    {
+     "type": "pair",
+     "at": "laptop",
+     "expr_left": "typing",
+     "expr_right": "writing",
+     "mood_at": "worse",
+     "talk": "right"
+    },
+    {
+     "type": "title",
+     "text": "note",
+     "at": "notes"
+    }
+   ]
+  },
+  {
+   "line": "l3",
+   "elements": [
+    {
+     "type": "crowd",
+     "n": 5,
+     "at": "they",
+     "highlight": 3,
+     "highlight_at": "transcribed"
+    },
+    {
+     "type": "icon",
+     "item": "laptop",
+     "at": "they",
+     "pos": "right",
+     "y": "mid",
+     "tilt": 0.1
+    }
+   ]
+  },
+  {
+   "line": "l4",
+   "elements": [
+    {
+     "type": "chart",
+     "kind": "down",
+     "values": [
+      100,
+      80,
+      60,
+      40,
+      20
+     ],
+     "at": "processing",
+     "until": "recall",
+     "label": "understanding"
+    }
+   ]
+  },
+  {
+   "line": "l5",
+   "elements": [
+    {
+     "type": "icon",
+     "item": "laptop",
+     "at": "laptops",
+     "pos": "right",
+     "y": "mid",
+     "lit_at": "note",
+     "tilt": 0.1
+    },
+    {
+     "type": "cross",
+     "at": "can",
+     "pos": "left"
+    }
+   ]
+  }
+ ],
+ "_onarim": [
+  "l2: nesne \"note\" yok -> başlık",
+  "l3: at=\"laptops\" -> \"they\" (satır başı)",
+  "l3: lit_at=\"note\" silindi"
+ ]
+}

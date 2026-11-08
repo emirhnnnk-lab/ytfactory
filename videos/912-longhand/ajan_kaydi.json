@@ -1,0 +1,66 @@
+[
+ {
+  "adim": "senaryo",
+  "t": 1794127656.3,
+  "deneme": 1,
+  "hata": 1,
+  "onarim": 0,
+  "ilk": [
+   "l2: not supported by SOURCE (The source does not specify the institutions of the researchers involved.)"
+  ],
+  "onarimlar": []
+ },
+ {
+  "adim": "senaryo",
+  "t": 1794127830.3,
+  "deneme": 2,
+  "hata": 0,
+  "onarim": 0,
+  "ilk": [],
+  "onarimlar": []
+ },
+ {
+  "adim": "sahne",
+  "t": 1794127926.8,
+  "deneme": 1,
+  "hata": 1,
+  "onarim": 0,
+  "ilk": [
+   "l2: counter to=100 is not a number spoken in the line (spoken: none)"
+  ],
+  "onarimlar": []
+ },
+ {
+  "adim": "sahne",
+  "t": 1794127999.4,
+  "deneme": 2,
+  "hata": 0,
+  "onarim": 3,
+  "ilk": [],
+  "onarimlar": [
+   "l2: nesne \"note\" yok -> başlık",
+   "l3: at=\"laptops\" -> \"they\" (satır başı)",
+   "l3: lit_at=\"note\" silindi"
+  ]
+ },
+ {
+  "adim": "ses",
+  "t": 1794128004.5,
+  "tamam": true
+ },
+ {
+  "adim": "kareler",
+  "t": 1794128008.9,
+  "saniyeler": "2.2,7.7,13.2,18.7"
+ },
+ {
+  "adim": "video",
+  "t": 1794128074.1,
+  "sure_sn": 22.1
+ },
+ {
+  "adim": "bitti",
+  "t": 1794128074.1,
+  "toplam_sn": 593
+ }
+]

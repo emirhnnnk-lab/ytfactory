@@ -1,0 +1,128 @@
+{
+ "scenes": [
+  {
+   "line": "l1",
+   "elements": [
+    {
+     "type": "person",
+     "at": "surprisingly",
+     "pos": "center",
+     "expr": "surprised",
+     "mood_at": "surprisingly"
+    },
+    {
+     "type": "icon",
+     "item": "phone",
+     "at": "handsfree",
+     "pos": "left",
+     "y": "low",
+     "lit_at": "handsfree"
+    }
+   ]
+  },
+  {
+   "line": "l2",
+   "elements": [
+    {
+     "type": "crowd",
+     "n": 3,
+     "at": "drivers",
+     "highlight": 1,
+     "highlight_at": "drivers"
+    },
+    {
+     "type": "pair",
+     "at": "chat",
+     "expr_left": "talking",
+     "expr_right": "simulating driving",
+     "mood_at": "chat",
+     "talk": "right"
+    }
+   ]
+  },
+  {
+   "line": "l3",
+   "elements": [
+    {
+     "type": "title",
+     "text": "lights",
+     "at": "lights"
+    }
+   ]
+  },
+  {
+   "line": "l4",
+   "elements": [
+    {
+     "type": "walk",
+     "at": "attention",
+     "pos": "right"
+    },
+    {
+     "type": "cross",
+     "at": "attention"
+    }
+   ]
+  },
+  {
+   "line": "l5",
+   "elements": [
+    {
+     "type": "icon",
+     "item": "eye",
+     "at": "eyetracking",
+     "pos": "left",
+     "y": "mid",
+     "lit_at": "eyetracking"
+    },
+    {
+     "type": "chart",
+     "kind": "down",
+     "values": [
+      100,
+      70
+     ],
+     "at": "focus",
+     "until": "road",
+     "label": "Focus"
+    }
+   ]
+  },
+  {
+   "line": "l6",
+   "elements": [
+    {
+     "type": "title",
+     "text": "billboard",
+     "at": "billboards"
+    }
+   ]
+  },
+  {
+   "line": "l7",
+   "elements": [
+    {
+     "type": "pair",
+     "at": "attention",
+     "expr_left": "reduced",
+     "expr_right": "impaired",
+     "mood_at": "attention",
+     "talk": "right"
+    },
+    {
+     "type": "icon",
+     "item": "car",
+     "at": "driving",
+     "pos": "right",
+     "y": "mid",
+     "lit_at": "driving"
+    }
+   ]
+  }
+ ],
+ "_onarim": [
+  "l3: nesne \"lights\" yok -> başlık",
+  "l6: nesne \"billboard\" yok -> başlık",
+  "l6: sayılmayan satırda sayaç -> çıkarıldı"
+ ]
+}

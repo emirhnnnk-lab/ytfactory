@@ -1,0 +1,116 @@
+[
+ {
+  "adim": "ollama_hata",
+  "t": 1794130378.3,
+  "hata": 500,
+  "model": "qwen2.5:14b",
+  "deneme": 1
+ },
+ {
+  "adim": "ollama_hata",
+  "t": 1794130463.8,
+  "hata": 500,
+  "model": "qwen2.5:14b",
+  "deneme": 2
+ },
+ {
+  "adim": "ollama_hata",
+  "t": 1794130575.2,
+  "hata": 500,
+  "model": "qwen2.5:14b",
+  "deneme": 3
+ },
+ {
+  "adim": "senaryo",
+  "t": 1794130723.8,
+  "deneme": 1,
+  "hata": 1,
+  "onarim": 0,
+  "ilk": [
+   "l6: not supported by SOURCE (The source does not make a direct claim about the relationship between brain activity and continued play behavior.)"
+  ],
+  "onarimlar": []
+ },
+ {
+  "adim": "senaryo",
+  "t": 1794130907.1,
+  "deneme": 2,
+  "hata": 1,
+  "onarim": 0,
+  "ilk": [
+   "l7: not supported by SOURCE (The line makes a broader claim about understanding gambling addiction, which is not directly supported by the specific findings of the study.)"
+  ],
+  "onarimlar": []
+ },
+ {
+  "adim": "ollama_hata",
+  "t": 1794131060.8,
+  "hata": 500,
+  "model": "qwen2.5:14b",
+  "deneme": 1
+ },
+ {
+  "adim": "ollama_hata",
+  "t": 1794131145.7,
+  "hata": 500,
+  "model": "qwen2.5:14b",
+  "deneme": 2
+ },
+ {
+  "adim": "ollama_hata",
+  "t": 1794131248.9,
+  "hata": 500,
+  "model": "qwen2.5:14b",
+  "deneme": 3
+ },
+ {
+  "adim": "senaryo",
+  "t": 1794131394.0,
+  "deneme": 3,
+  "hata": 1,
+  "onarim": 0,
+  "ilk": [
+   "l7: not supported by SOURCE (The line is incomplete and does not provide a full claim to evaluate based on the source.)"
+  ],
+  "onarimlar": []
+ },
+ {
+  "adim": "senaryo",
+  "t": 1794131394.0,
+  "son_care": "1 satır çıkarıldı",
+  "satirlar": [
+   "l7"
+  ]
+ },
+ {
+  "adim": "sahne",
+  "t": 1794131495.2,
+  "deneme": 1,
+  "hata": 0,
+  "onarim": 1,
+  "ilk": [],
+  "onarimlar": [
+   "l6: sayılmayan satırda sayaç -> çıkarıldı"
+  ]
+ },
+ {
+  "adim": "ses",
+  "t": 1794131500.0,
+  "tamam": true
+ },
+ {
+  "adim": "kareler",
+  "t": 1794131507.0,
+  "saniyeler": "2.5,8.8,15.1,21.4"
+ },
+ {
+  "adim": "video",
+  "t": 1794131842.9,
+  "sure_sn": 25.1
+ },
+ {
+  "adim": "bitti",
+  "t": 1794131842.9,
+  "toplam_sn": 1620
+ }
+]

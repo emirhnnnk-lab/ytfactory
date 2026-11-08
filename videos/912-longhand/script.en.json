@@ -1,0 +1,33 @@
+{
+ "title": "The Pen is Mightier Than the Keyboard",
+ "lines": [
+  {
+   "id": "l1",
+   "text": "Surprisingly, typing notes on a laptop can be less effective than writing them by hand."
+  },
+  {
+   "id": "l2",
+   "text": "Researchers found that laptop users took more notes but performed worse on tests."
+  },
+  {
+   "id": "l3",
+   "text": "They transcribed lectures verbatim rather than processing the information."
+  },
+  {
+   "id": "l4",
+   "text": "This shallow processing leads to poorer understanding and recall."
+  },
+  {
+   "id": "l5",
+   "text": "Even when laptops are used solely for note taking, they can impair learning."
+  }
+ ],
+ "id": "912-longhand",
+ "lang": "en",
+ "voice": "en-US-GuyNeural",
+ "rate": "+0%",
+ "sources": [
+  "Mueller PA, Oppenheimer DM (2014). The pen is mightier than the keyboard. Psychol Sci 25(6):1159-1168. PMID 24760141"
+ ],
+ "uretildi": "ajan (qwen2.5:7b)"
+}

@@ -1,0 +1,41 @@
+{
+ "title": "Cell Phone-Induced Failures of Visual Attention During Driving",
+ "lines": [
+  {
+   "id": "l1",
+   "text": "Surprisingly, talking on a hands-free phone while driving can impair your reaction to brake lights."
+  },
+  {
+   "id": "l2",
+   "text": "Researchers had drivers simulate driving and chat on a phone."
+  },
+  {
+   "id": "l3",
+   "text": "Drivers missed seeing brake lights in front of them."
+  },
+  {
+   "id": "l4",
+   "text": "This happened because they paid less attention to the visual scene."
+  },
+  {
+   "id": "l5",
+   "text": "Eye-tracking showed reduced focus on the road."
+  },
+  {
+   "id": "l6",
+   "text": "Impaired memory for billboards supported this finding."
+  },
+  {
+   "id": "l7",
+   "text": "This means reduced attention to visual inputs impairs driving performance."
+  }
+ ],
+ "id": "911-phone-driving",
+ "lang": "en",
+ "voice": "en-US-GuyNeural",
+ "rate": "+0%",
+ "sources": [
+  "Strayer DL, Drews FA, Johnston WA (2003). Cell phone-induced failures of visual attention during simulated driving. J Exp Psychol Appl 9(1):23-32. PMID 12710835"
+ ],
+ "uretildi": "ajan (qwen2.5:7b)"
+}

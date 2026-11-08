@@ -74,6 +74,43 @@ Test kaynağı: Piff ve ark. (2012, PNAS) çalışmasının yöntem ve bulgu not
 
 **Ders:** Ajanın yazdığını aynı model denetleyince kendi hatasını görmüyor. Denetçi ayrı ve daha güçlü olmalı. Bu da yetmez: bu tek bir testti, denetçi her hatayı yakalayacak diye bir garanti yok. O yüzden yayından önce insan kontrolü zorunlu kalıyor.
 
+### Üç farklı alanda test (08.11)
+Kaynaklar PubMed'den çekilen özetler, ajana sadece özet metni verildi:
+| Video | Kaynak | Stil | Sonuç |
+|---|---|---|---|
+| 910 Neredeyse kazanmak (oyun psikolojisi) | Clark ve ark. 2009, *Neuron* | kesik | 4. denemede üretildi (27 dk): Ollama 500, sayılmayan satıra sayaç, zaman aşımı ve denetçinin aşırı katılığı tek tek çözüldü |
+| 911 Telefonla konuşurken sürüş | Strayer ve ark. 2003, *J Exp Psychol Appl* | plan | Üretildi. Denetçi "görüşü bozar" ifadesini yakaladı ("dikkati" olmalı) |
+| 912 El yazısı ve laptop | Mueller ve Oppenheimer 2014, *Psychol Sci* | lino | Üretildi. 3 otomatik onarım (uydurma nesne "note" → başlık) |
+
+**Bu turda bulunan hatalar ve düzeltmeler:**
+- **Ollama 500:** 7B ve 14B 4 GB GPU'da sırayla yüklenirken bellek yetmiyor. Ajanın tekrar deneme mantığı yoktu. Düzeltme: artan bekleme süresiyle 4 deneme.
+- **Uydurma nesneler:** Model "billboard", "laptop", "pen", "slot", "note" gibi kütüphanede olmayan nesneler istedi ve 3 geri bildirime rağmen ısrar etti. Düzeltme: sık istenenleri (laptop, kalem, göz) kütüphaneye çizdim. Geri kalanlar için deterministik onarım: bilinmeyen nesne o kelimeyi ekrana yazan bir başlığa dönüşüyor, anlam kaybolmuyor.
+- **Sayılmayan satırda sayaç:** Onarım kuralı eklendi; söylenen sayı yoksa sayaç çıkarılıyor.
+- **Denetçinin kaçırdıkları (düzeltilmedi, kayıtta):**
+  - 911'de "öndeki araçların fren lambalarını fark etmediler" deniyor. Kaynak "frenleyen araçlara tepkileri bozuldu" diyor, "fark etmediler" demiyor.
+  - 912'de "testlerde daha kötü" deniyor. Kaynak "kavramsal sorularda" diyor.
+  - 912'de "hatırlamayı bozar" iddiası özette yok.
+
+  Üç videonun üçünde de denetçi en az bir aşırı genellemeyi geçirdi. **Ajan, insan kontrolü olmadan yayın yapabilecek seviyede değil.**
+- **Zaman aşımı:** Tekrar deneme mantığı sadece HTTP hatalarını yakalıyordu, zaman aşımını yakalamıyordu. Kapsamı genişletildi.
+- **Denetçi bu sefer fazla katı:** 910'da "ödül devreleri neredeyse kazanmayı motive edici kılıyor" cümlesini reddetti. Oysa kaynak tam olarak bunu söylüyor. Yani denetçi bir videoda aşırı genellemeyi kaçırıyor, diğerinde doğru cümleyi reddediyor; tutarsız. Son çare kuralı eklendi: son denemede hâlâ işaretli satırlar varsa, en az 5 satır kalmak şartıyla çıkarılıyor. Şüpheli cümleyi tutmaktansa atmak daha güvenli.
+- **Donanım darboğazı:** 910'da Ollama 6 kez 500 verdi. 4 GB GPU'da 7B ile 14B arasında geçiş bir videoyu 12 dakikadan 27 dakikaya çıkardı. Bunun çözümü ayrı bir ölçüm çalışmasının konusu (quantization, offloading).
+- **Görsel kalite kontrolü yok:** Doğrulayıcılar kural ihlallerini yakalıyor, ama görselin anlamlı olup olmadığını kontrol etmiyor. 910'da "slot makinesi" sahnesine dünya ikonu kondu, 4 sahnenin 4'ünde de aynı tek kişi var. Sıradaki iyileştirme: kontrol karelerine bakan bir görsel model ya da en azından "aynı öğe tipi üst üste kullanılamaz" kuralının kodda zorlanması.
+
+<img src="docs/910_kareler.png" width="640"><br>
+<img src="docs/911_912_kareler.png" width="640">
+
+- **Kaynağın kendisi:** Mueller ve Oppenheimer (2014) çalışmasının sonraki tekrarlarında sonuçlar tutarsız çıktı ve PubMed kaydında bir düzeltme notu var. Ajan sadece özeti gördüğü için bunu bilemez. Hangi kaynağın kullanılacağına insan karar vermeli.
+
+## Ajanın çizim dağarcığı
+İlk sürümde ajanın elinde 9 öğe vardı: kişi, araba, para, ev, kitap, hediye, sayaç, çarpı ve balon. Trafik çalışmasını anlatmaya yetiyordu, ama uyku, dikkat ya da para gibi konularda ajan doğru görseli bulamayıp her şeyi yazıyla geçiştiriyordu. Şu an 14 sahne öğesi ve 17 nesne var:
+- **Sahne öğeleri:** başlık, damga, etiket, kişi, yürüyen kişi, sıra, sayaç, çarpı, balon, **ikon, grafik (yükselen / düşen / çubuk), ikiye bölünmüş karşılaştırma ekranı, karşılıklı iki kişi, kalabalık**
+- **Nesneler:** araba, para, ev, kitap, hediye, **telefon, saat, beyin, kalp, ampul, kilit, kupa, terazi, dünya, banknot, hap, yatak**
+
+Yeni nesneler (`src/render/props.js`) yalnızca stilin boya rollerini kullanıyor. Bu yüzden 6 stilin hepsinde ayrı bir ayar gerekmeden doğru görünüyor:
+
+<img src="docs/ogeler_6_stil.png" width="640">
+
 ## Stiller
 `src/render/styles.js` stil sözleşmesi. Sahne kodu renk ya da font seçmez, sadece stile sorar. Çizim modları üç tane (`line` tebeşir, `fill` linol baskı, `cut` kesik kâğıt). Altı palet var: `gece`, `lino`, `kesik`, ve ajanla eklenen `neon` (karanlık psikoloji), `gazete` (siyaset), `plan` (teknik çizim).
 

@@ -9,7 +9,7 @@ Ajan hiçbir yere yükleme yapmaz; videoyu ve kontrol karelerini insan izler, ya
 """
 import argparse, json, re, subprocess, sys, time
 from pathlib import Path
-import urllib.request
+import urllib.request, urllib.error
 
 KOK = Path(__file__).resolve().parents[1]
 SES = {"en": "en-US-GuyNeural", "tr": "tr-TR-AhmetNeural"}
@@ -25,9 +25,15 @@ def log(adim, **k):
 def llm(model, sistem, kullanici, sema=None):
     govde = {"model": model, "stream": False, "format": "json", "options": {"temperature": 0.4, "num_ctx": 8192},
              "messages": [{"role": "system", "content": sistem}, {"role": "user", "content": kullanici}]}
-    r = urllib.request.urlopen(urllib.request.Request("http://localhost:11434/api/chat", json.dumps(govde).encode(),
-                                                      {"Content-Type": "application/json"}), timeout=600)
-    return json.loads(json.loads(r.read())["message"]["content"])
+    for deneme in range(4):   # Ollama model değiştirirken (7B <-> 14B) bellek yetmeyip 500 dönebiliyor
+        try:
+            r = urllib.request.urlopen(urllib.request.Request("http://localhost:11434/api/chat", json.dumps(govde).encode(),
+                                                              {"Content-Type": "application/json"}), timeout=600)
+            return json.loads(json.loads(r.read())["message"]["content"])
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:   # 500, zaman aşımı, bağlantı kopması
+            log("ollama_hata", hata=getattr(e, "code", type(e).__name__), model=model, deneme=deneme + 1)
+            time.sleep(15 * (deneme + 1))
+    raise SystemExit(f"Ollama {model}: 4 denemede cevap yok")
 
 
 # ---------- 1. senaryo ----------
@@ -43,7 +49,7 @@ Rules:
 
 DENETCI_SISTEM = """You are a strict fact checker. You get a SOURCE and narration LINES.
 For EACH line decide if every factual claim in it is directly supported by the SOURCE with the same meaning.
-Watch for: a number attached to the wrong group (e.g. a rate for ALL drivers presented as a rate for a subgroup), stronger causal wording than the source, invented details.
+Watch for: a different mechanism or outcome than the source names (e.g. the source says 'attention' but the line says 'vision'; the source tested one setting but the line generalizes to everyone or everything), a number attached to the wrong group (e.g. a rate for ALL drivers presented as a rate for a subgroup), stronger causal wording than the source, invented details.
 Return JSON: {"checks": [{"id": "l1", "supported": true|false, "evidence": "short quote from SOURCE or empty", "problem": "what is wrong, or empty"}]}"""
 
 
@@ -91,11 +97,18 @@ Element types (nothing else exists):
 - {"type":"counter","to":number,"from":number,"suffix":"%" or "","at":word,"until":word}  number rolls up
 - {"type":"cross","at":word}                              big X (something fails / does not happen)
 - {"type":"bubble","text":<=22 chars,"at":word,"pos":..}   speech bubble
+- {"type":"icon","item":one of {items},"at":word,"pos":..,"y":..,"lit_at":word (highlight moment),"tilt":-1..1 (only for scale)}   one big object
+- {"type":"chart","kind":"up|down|bars","values":[numbers] (optional, only numbers from the line),"at":word,"until":word,"label":<=22 chars}   chart that draws itself
+- {"type":"split","left":<=14 chars,"right":<=14 chars,"at":word,"right_at":word}   screen split in two: compare two groups/conditions
+- {"type":"pair","at":word,"expr_left":..,"expr_right":..,"mood_at":word,"talk":"left|right"}   two people facing each other
+- {"type":"crowd","n":3-7,"at":word,"highlight":index,"highlight_at":word}   group of people, one can stand out
 Rules:
 - Every "at", "until", "mood_at" MUST be ONE single word from that line's "allowed anchor words" list, never a phrase. It MUST be a word that is spoken in THAT line (copy it exactly).
 - At most 2 accents per scene (counter, stamp and accent titles count as accents). Keep frames simple.
 - Show, do not repeat: do not put the whole sentence on screen; pick 1-3 key words or a number.
-- Numbers on screen must be the numbers spoken in the line."""
+- Numbers on screen must be the numbers spoken in the line.
+- Pick the picture that SHOWS the idea: comparisons -> split, trends -> chart, groups -> crowd, conversations -> pair, objects (phone, sleep, money, time) -> icon.
+- Vary the scenes: do not use the same element type in more than 2 scenes in a row."""
 
 
 def spec_dogrula(spec, sc):
@@ -113,18 +126,34 @@ def kelimeler(t):
 
 
 def onar(spec, sc):
-    """Çok kelimeli bağları ("were observed") satırda geçen ilk kelimeye indirir. Kaç onarım yapıldığını döndürür."""
-    n, satir = 0, {l["id"]: kelimeler(l["text"]) for l in sc["lines"]}
+    """Modelin düzeltemediği, anlamı değiştirmeyen hataları deterministik onarır. Her onarım kayda geçer.
+    - çok kelimeli bağ ("were observed") -> satırda geçen ilk kelime
+    - satırda olmayan yan bağ (until, lit_at...) -> silinir; olmayan ana bağ (at) -> satırın ilk kelimesi
+    - kütüphanede olmayan nesne ("laptop") -> o kelimeyi ekrana yazan başlık (anlam kaybolmaz)"""
+    nz = lambda w: re.sub(r"[^\w']", "", w.lower())
+    n, satir = [], {l["id"]: kelimeler(l["text"]) for l in sc["lines"]}
+    bilinen = set(spec_bilgi()["i"])
     for s in spec.get("scenes", []):
         ws = satir.get(s.get("line"), [])
         for e in s.get("elements", []):
-            for k in ("at", "until", "mood_at"):
+            if e.get("type") in ("row", "icon") and e.get("item") not in bilinen:
+                ad = str(e.get("item") or "?")[:22]
+                n.append(f'{s.get("line")}: nesne "{ad}" yok -> başlık')
+                at = e.get("at"); e.clear(); e.update({"type": "title", "text": ad, "at": at})
+            if e.get("type") == "counter":
+                # sayaç sadece satırda söylenen bir sayıyı gösterebilir; söylenen sayı yoksa öğe çıkarılır
+                sayi = [float(x) if "." in x else int(x) for x in re.findall(r"\d+(?:\.\d+)?", next((l["text"] for l in sc["lines"] if l["id"] == s.get("line")), "").replace(",", ""))]
+                if not sayi: n.append(f'{s.get("line")}: sayılmayan satırda sayaç -> çıkarıldı'); e.clear(); e.update({"type": "_sil"}); continue
+                if e.get("to") not in sayi: n.append(f'{s.get("line")}: sayaç {e.get("to")} -> {sayi[0]}'); e["to"] = sayi[0]
+            for k in ("at", "until", "mood_at", "lit_at", "right_at", "highlight_at"):
                 v = e.get(k)
                 if not isinstance(v, str) or not v: continue
-                if any(w.startswith(re.sub(r"[^\w']", "", v.lower())) for w in ws) and " " not in v.strip(): continue
+                if " " not in v.strip() and any(nz(w).startswith(nz(v)) for w in ws): continue
                 aday = [w for w in kelimeler(v) if w in ws]
-                if aday: e[k] = aday[0]; n += 1
-                elif k != "at": e.pop(k); n += 1
+                if aday: e[k] = aday[0]; n.append(f'{s.get("line")}: {k}="{v}" -> "{aday[0]}"')
+                elif k != "at": e.pop(k); n.append(f'{s.get("line")}: {k}="{v}" silindi')
+                elif ws: e[k] = ws[0]; n.append(f'{s.get("line")}: at="{v}" -> "{ws[0]}" (satır başı)')
+        s["elements"] = [e for e in s.get("elements", []) if e.get("type") != "_sil"]
     return n
 
 
@@ -135,10 +164,19 @@ def tekrar(ad, uret, dogrula, deneme=3):
         if ad == "sahne":
             sonuc["_onarim"] = onar(sonuc, SC_AKTIF[0])
         h = dogrula(sonuc)
-        log(ad, deneme=i + 1, hata=len(h), onarim=sonuc.get("_onarim", 0) if isinstance(sonuc, dict) else 0, ilk=h[:3])
+        log(ad, deneme=i + 1, hata=len(h), onarim=len(sonuc.get("_onarim", [])) if isinstance(sonuc, dict) else 0, ilk=h[:3], onarimlar=sonuc.get("_onarim", []) if isinstance(sonuc, dict) else [])
         if not h:
             return sonuc
         geri = "\n\nYour previous answer had these problems, fix ALL of them and return the full JSON again:\n- " + "\n- ".join(h) + "\n\nPrevious answer:\n" + json.dumps(sonuc, ensure_ascii=False)
+    if ad == "senaryo":
+        # son çare: denetçinin hâlâ itiraz ettiği satırları at (şüpheli cümleyi tutmaktansa atmak güvenli)
+        kotu = {x.split(":")[0] for x in h if re.match(r"l\d+:", x)}
+        kalan = [l for l in sonuc.get("lines", []) if l.get("id") not in kotu]
+        if len(kotu) == len(h) and len(kalan) >= 5:
+            log(ad, son_care=f"{len(kotu)} satır çıkarıldı", satirlar=sorted(kotu))
+            sonuc["lines"] = kalan
+            for i, l in enumerate(kalan): l["id"] = f"l{i + 1}"
+            return sonuc
     raise SystemExit(f"{ad}: {deneme} denemede geçerli çıktı yok, son hatalar: {h}")
 
 

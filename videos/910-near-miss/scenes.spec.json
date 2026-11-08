@@ -1,0 +1,111 @@
+{
+ "scenes": [
+  {
+   "line": "l1",
+   "elements": [
+    {
+     "type": "person",
+     "at": "Surprisingly",
+     "pos": "center",
+     "expr": "surprised"
+    },
+    {
+     "type": "icon",
+     "item": "trophy",
+     "at": "nearmisses",
+     "pos": "left",
+     "y": "low",
+     "lit_at": "more"
+    }
+   ]
+  },
+  {
+   "line": "l2",
+   "elements": [
+    {
+     "type": "person",
+     "at": "Researchers",
+     "pos": "right",
+     "expr": "neutral"
+    },
+    {
+     "type": "icon",
+     "item": "globe",
+     "at": "slot",
+     "pos": "left",
+     "y": "low",
+     "lit_at": "task"
+    }
+   ]
+  },
+  {
+   "line": "l3",
+   "elements": [
+    {
+     "type": "person",
+     "at": "Near-misses",
+     "pos": "center",
+     "expr": "neutral"
+    },
+    {
+     "type": "icon",
+     "item": "trophy",
+     "at": "not",
+     "pos": "right",
+     "y": "low",
+     "lit_at": "play"
+    }
+   ]
+  },
+  {
+   "line": "l4",
+   "elements": [
+    {
+     "type": "person",
+     "at": "This",
+     "pos": "center",
+     "expr": "neutral"
+    },
+    {
+     "type": "bubble",
+     "text": "control",
+     "at": "control",
+     "pos": "right"
+    }
+   ]
+  },
+  {
+   "line": "l5",
+   "elements": [
+    {
+     "type": "person",
+     "at": "Brain",
+     "pos": "center",
+     "expr": "neutral"
+    },
+    {
+     "type": "icon",
+     "item": "brain",
+     "at": "areas",
+     "pos": "right",
+     "y": "low",
+     "lit_at": "wins"
+    }
+   ]
+  },
+  {
+   "line": "l6",
+   "elements": [
+    {
+     "type": "person",
+     "at": "This",
+     "pos": "center",
+     "expr": "neutral"
+    }
+   ]
+  }
+ ],
+ "_onarim": [
+  "l6: sayılmayan satırda sayaç -> çıkarıldı"
+ ]
+}

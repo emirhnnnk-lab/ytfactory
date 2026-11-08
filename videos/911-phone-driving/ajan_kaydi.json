@@ -1,0 +1,56 @@
+[
+ {
+  "adim": "senaryo",
+  "t": 1794128962.6,
+  "deneme": 1,
+  "hata": 2,
+  "onarim": 0,
+  "ilk": [
+   "l1: not supported by SOURCE (The source does not claim that talking on a hands-free phone impairs vision; it states that attention to visual inputs is reduced, leading to impaired driving performance.)",
+   "l7: not supported by SOURCE (The source suggests that cell phone conversations impair driving performance by reducing attention to visual inputs, but it does not claim that the brain cannot handle both tasks simultaneously; it specifies a mechanism of reduced visual attention.)"
+  ],
+  "onarimlar": []
+ },
+ {
+  "adim": "senaryo",
+  "t": 1794129172.1,
+  "deneme": 2,
+  "hata": 0,
+  "onarim": 0,
+  "ilk": [],
+  "onarimlar": []
+ },
+ {
+  "adim": "sahne",
+  "t": 1794129314.8,
+  "deneme": 1,
+  "hata": 0,
+  "onarim": 3,
+  "ilk": [],
+  "onarimlar": [
+   "l3: nesne \"lights\" yok -> başlık",
+   "l6: nesne \"billboard\" yok -> başlık",
+   "l6: sayılmayan satırda sayaç -> çıkarıldı"
+  ]
+ },
+ {
+  "adim": "ses",
+  "t": 1794129320.3,
+  "tamam": true
+ },
+ {
+  "adim": "kareler",
+  "t": 1794129326.5,
+  "saniyeler": "2.6,8.9,15.3,21.7"
+ },
+ {
+  "adim": "video",
+  "t": 1794129526.4,
+  "sure_sn": 25.5
+ },
+ {
+  "adim": "bitti",
+  "t": 1794129526.4,
+  "toplam_sn": 773
+ }
+]
