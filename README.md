@@ -1,5 +1,7 @@
 # ytfactory — Otomatik Animasyonlu Video Fabrikası
 
+> **EN summary:** An agent that turns a topic or a research abstract into a finished animated short video, fully local: a 7B writer drafts the script, a separate 14B fact-checker verifies every claim against the source, a validator/repair loop builds the scene spec, then TTS with word-level timing and SVG rendering produce the MP4. Includes a Streamlit panel (type a topic → pick a source from PubMed/Wikipedia → get a video) and a documented error→fix history. Nothing is uploaded automatically.
+
 Psikoloji ve davranış bilimi konulu **YouTube Shorts ve uzun videoları** senaryodan bitmiş MP4'e kadar otomatik üreten hat. Tek senaryo dosyasından seslendirme, kelime kelime zamanlama, çizim animasyonu ve render.
 
 ## Nasıl çalışır
