@@ -3,3 +3,8 @@ videos/*/audio_*/
 videos/*/out/
 .env
 __pycache__/
+
+assets/urun_test/
+videos/950-urun-demo/
+videos/*/urun.png
+videos/*/urun_kaynak.*

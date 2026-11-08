@@ -63,6 +63,15 @@ Rules:
 - No claims stronger than the source. If the source says "predicted" do not write "caused"."""
 
 
+REKLAM_SISTEM = """You write the voice-over for a 20-30 second animated product ad for social media.
+Return JSON: {"title": str, "lines": [{"id": "l1", "text": str, "gap": number (optional pause after, 0.2-0.6)}]}.
+Rules:
+- 5 or 6 short lines. Each line at most 12 words, plain spoken {dil}, warm and confident, no hype words like "amazing" or "best ever".
+- Line 1 is a hook about the customer's moment or need, not about the product. Then 2-3 lines on what the product is and its concrete features. Last line is the brand name and its tagline from the SOURCE.
+- Use ONLY facts present in the SOURCE. Never invent prices, discounts, materials, sizes, guarantees or delivery promises. Write numbers as digits.
+- Never use "..." (the voice engine pauses badly)."""
+
+
 DENETCI_SISTEM = """You are a strict fact checker. You get a SOURCE and narration LINES.
 For EACH line decide if every factual claim in it is directly supported by the SOURCE with the same meaning.
 Watch for: a different mechanism or outcome than the source names (e.g. the source says 'attention' but the line says 'vision'; the source tested one setting but the line generalizes to everyone or everything), a number attached to the wrong group (e.g. a rate for ALL drivers presented as a rate for a subgroup), stronger causal wording than the source, invented details.
@@ -148,6 +157,18 @@ def onar(spec, sc):
     - kütüphanede olmayan nesne ("laptop") -> o kelimeyi ekrana yazan başlık (anlam kaybolmaz)"""
     nz = lambda w: re.sub(r"[^\w']", "", w.lower())
     n, satir = [], {l["id"]: kelimeler(l["text"]) for l in sc["lines"]}
+    # sahnesi hiç yazılmamış satır (08.11, nöbetçinin ikinci koşusunda yakalandı: "no scene for l7"):
+    # satırın en uzun kelimesini gösteren sade bir başlık sahnesi eklenir; video eksik kalmaz, onarım kayda geçer
+    spec.setdefault("scenes", [])
+    var = {s.get("line") for s in spec["scenes"]}
+    for l in sc["lines"]:
+        if l["id"] not in var and satir.get(l["id"]):
+            ws = satir[l["id"]]
+            ana = max((w for w in ws if len(w) <= 22), key=len, default=ws[0])
+            spec["scenes"].append({"line": l["id"], "elements": [{"type": "title", "text": ana, "at": ws[0]}]})
+            n.append(f'{l["id"]}: sahne yoktu -> "{ana}" başlığı eklendi')
+    sira = {l["id"]: i for i, l in enumerate(sc["lines"])}
+    spec["scenes"].sort(key=lambda s: sira.get(s.get("line"), 999))
     bilinen = set(spec_bilgi()["i"])
     for s in spec.get("scenes", []):
         ws = satir.get(s.get("line"), [])
@@ -170,6 +191,23 @@ def onar(spec, sc):
                 elif k != "at": e.pop(k); n.append(f'{s.get("line")}: {k}="{v}" silindi')
                 elif ws: e[k] = ws[0]; n.append(f'{s.get("line")}: at="{v}" -> "{ws[0]}" (satır başı)')
         s["elements"] = [e for e in s.get("elements", []) if e.get("type") != "_sil"]
+        # stil kuralı: sahnede en fazla 2 vurgu. Fazlası modelin sık inat ettiği hata (08.11, nöbetçinin
+        # yakaladığı arıza). İlk iki vurgu kalır; sonrakilerin vurgu bayrağı kaldırılır, damga sade başlığa döner.
+        vurgu = 0
+        for e in s["elements"]:
+            bayrak = [k for k in ("accent", "lit", "lit_at") if e.get(k)]
+            dogal = e.get("type") in ("counter", "stamp", "chart")
+            if not (bayrak or dogal):
+                continue
+            vurgu += 1
+            if vurgu <= 2:
+                continue
+            if bayrak:
+                for k in bayrak: e.pop(k)
+                n.append(f'{s.get("line")}: 3. vurgu ({e.get("type")}) -> vurgusuz')
+            elif e.get("type") == "stamp":
+                e["type"] = "title"; e.pop("accent", None)
+                n.append(f'{s.get("line")}: 3. vurgu (damga) -> başlık')
     return n
 
 
@@ -206,19 +244,32 @@ def main():
     ap.add_argument("--slug", required=True); ap.add_argument("--kaynak", required=True); ap.add_argument("--atif", required=True)
     ap.add_argument("--dil", default="en"); ap.add_argument("--stil", default="gece"); ap.add_argument("--model", default="qwen2.5:7b"); ap.add_argument("--denetci", default="qwen2.5:14b")
     ap.add_argument("--sadece", choices=["senaryo", "kare", "video"], default="video")
+    ap.add_argument("--kip", choices=["anlatim", "reklam"], default="anlatim", help="anlatim: bilim videosu · reklam: ürün reklamı")
+    ap.add_argument("--urun", help="ürün fotoğrafı (jpg/png); arka planı silinip videoda kullanılır")
+    ap.add_argument("--urun_kutu", help="ürün bölgesi x1,y1,x2,y2 (fotoğrafta başka şeyler varsa)")
     a = ap.parse_args()
     kaynak = Path(a.kaynak).read_text(encoding="utf-8")
     vd = KOK / "videos" / a.slug; vd.mkdir(parents=True, exist_ok=True)
     dil = {"en": "English", "tr": "Turkish"}[a.dil]
     t0 = time.time()
 
-    sc = tekrar("senaryo", lambda g: llm(a.model, SENARYO_SISTEM.replace("{dil}", dil), f"SOURCE:\n{kaynak}{g}"),
+    sc = tekrar("senaryo", lambda g: llm(a.model, (REKLAM_SISTEM if a.kip == "reklam" else SENARYO_SISTEM).replace("{dil}", dil), f"SOURCE:\n{kaynak}{g}"),
                 lambda s: senaryo_dogrula(s, kaynak) or olgu_denetimi(a.denetci, s, kaynak))
     sc.update({"id": a.slug, "lang": a.dil, "voice": SES[a.dil], "rate": "+0%", "sources": [a.atif], "uretildi": f"ajan ({a.model})"})
     (vd / f"script.{a.dil}.json").write_text(json.dumps(sc, ensure_ascii=False, indent=1), encoding="utf-8")
 
     b = spec_bilgi()
     sis = SAHNE_SISTEM.replace("{expr}", "/".join(b["e"])).replace("{hair}", "/".join(b["h"])).replace("{items}", "/".join(b["i"]))
+    if a.urun:  # dış kaynak ürün görseli: kes, sahne diline "photo" öğesi olarak tanıt
+        from urun import kes
+        kutu = tuple(int(v) for v in a.urun_kutu.split(",")) if a.urun_kutu else None
+        png = vd / "urun.png"
+        log("urun", **kes(a.urun, str(png), kutu))
+        rel = png.relative_to(KOK).as_posix()
+        sis += ("\n\nA PRODUCT PHOTO is available. It is the star of this video. Use it in at least half of the scenes with: "
+                '{"type":"photo","src":"' + rel + '","at":word,"pos":"left|center|right","y":"top|mid|low",'
+                '"motion":"pop|float|spin|slide","size":optional px height}. Never put two photos in one scene. '
+                "Put labels or titles next to it, not on top of it.")
     SC_AKTIF[0] = sc
     satirlar = "\n".join(l["id"] + ": " + l["text"] + "\n    allowed anchor words: " + ", ".join(kelimeler(l["text"])) for l in sc["lines"])
     spec = tekrar("sahne", lambda g: llm(a.model, sis, f"NARRATION:\n{satirlar}{g}"), lambda s: spec_dogrula(s, sc))

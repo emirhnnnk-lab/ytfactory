@@ -34,6 +34,18 @@ python src/ajan.py --slug 920-ornek --kaynak kaynak.txt --atif "Yazar (yıl), De
 
 Bir video bu bilgisayarda (GTX 1650, 4 GB) yaklaşık 12-27 dakika sürüyor.
 
+## Ürün reklamı: fotoğraftan videoya
+Bir ürün fotoğrafı verdiğinizde ajan ürünü fotoğraftan kesip çizgi animasyonun içine yerleştiriyor:
+- **Kesim** (`src/urun.py`): arka planı yerel bir modelle (rembg) siliyor, boş kenarları kırpıyor, şeffaf PNG yazıyor. Fotoğrafta ürünün yanında bacak ya da el gibi başka şeyler varsa `--kutu x1,y1,x2,y2` ile ürün bölgesi verilebiliyor; otomatik kesici öne çıkan nesneyi alır ama hangisinin ürün olduğunu bilmez.
+- **Sahnede** yeni bir `photo` öğesi var: ürün kayarak giriyor, havada süzülüyor, dönüyor ya da büyüyerek beliriyor. Animasyon yine seslendirmedeki kelimeye bağlı.
+- **Reklam kipi** (`--kip reklam`): 5-6 kısa satırlık bir reklam metni yazıyor. Kaynak metin ürün açıklaması; kaynakta olmayan fiyat, indirim, malzeme ya da teslimat sözü yazmak yasak ve denetçi model bunu kontrol ediyor.
+- **Panelde** "Ürün fotoğrafı ekle" bölümü ve "Ürün reklamı" seçeneği var.
+
+```bash
+python src/urun.py foto.jpg urun.png --kutu 140,270,580,640
+python src/ajan.py --slug 960-bot --kaynak urun_aciklamasi.txt --atif "Marka" --kip reklam --urun foto.jpg --stil gece
+```
+
 ## Örnekler
 | Video | Kaynak | Stil | Ne oldu |
 |---|---|---|---|
@@ -58,7 +70,7 @@ Bir video bu bilgisayarda (GTX 1650, 4 GB) yaklaşık 12-27 dakika sürüyor.
 | Yanlış gruba atanmış oran | **geçti** | **yakalandı** |
 | Kaynakta olmayan genelleme | geçti | yakalandı |
 
-**2. Model inat etti, kod onardı.** Sahne tarifinde model animasyonları "were observed" gibi kelime gruplarına bağladı. Kontrol yakaladı, ama model 3 denemede de düzeltmedi. İki şey yaptım: prompta her satırda kullanabileceği kelimelerin listesini koydum, ve grubun satırda geçen ilk kelimesini seçen bir onarım adımı yazdım. Benzer şekilde, kütüphanede olmayan nesneler ("billboard", "slot") istediğinde artık o kelimeyi ekrana yazan bir başlığa dönüşüyor; anlam kaybolmuyor.
+**2. Model inat etti, kod onardı.** Sahne tarifinde model animasyonları "were observed" gibi kelime gruplarına bağladı. Kontrol yakaladı, ama model 3 denemede de düzeltmedi. İki şey yaptım: prompta her satırda kullanabileceği kelimelerin listesini koydum, ve grubun satırda geçen ilk kelimesini seçen bir onarım adımı yazdım. Benzer şekilde, kütüphanede olmayan nesneler ("billboard", "slot") istediğinde artık o kelimeyi ekrana yazan bir başlığa dönüşüyor; anlam kaybolmuyor. Aynı mantıkla iki inatçı hatayı daha kod onarıyor: bir sahnede ikiden fazla vurgu kullanırsa fazlası sadeleşiyor; bir satıra hiç sahne yazmazsa o satırın ana kelimesiyle bir başlık sahnesi ekleniyor. İkisini de video ajanını [Nöbetçi](https://github.com/emirhnnnk-lab/nobetci) gözetiminde çalıştırırken yakaladım.
 
 **3. Bazı hataları sadece bakan bir göz yakalıyor.** İlk videonun karelerinde kaynakta olmayan bir sayı ve yanlış bölünmüş bir altyazı vardı; hiçbiri otomatik kontrollere takılmamıştı. Kontrol kareleri adımını bu yüzden ekledim; yayından önce insan bakıyor.
 

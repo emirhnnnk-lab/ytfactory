@@ -113,10 +113,18 @@ with yeni:
         atif = st.text_input("Atıf", key="atif", placeholder="Yazar (yıl), Dergi")
     with sag:
         slug = st.text_input("Video adı (otomatik dolar, değiştirebilirsin)", key="slug", placeholder="telefon-surus")
+        kip = st.radio("Video türü", ["anlatim", "reklam"], horizontal=True, format_func=lambda k: {"anlatim": "Bilim anlatımı", "reklam": "Ürün reklamı"}[k],
+                       help="Ürün reklamında kaynak metin ürün açıklamasıdır; ajan fiyat, indirim gibi kaynakta olmayan şeyleri yazamaz.")
         stil = st.selectbox("Stil", STILLER, index=0)
         dil = st.radio("Dil", ["en", "tr"], horizontal=True)
         sadece = st.radio("Ne kadarını üretsin?", ["senaryo", "kare", "video"], index=2, horizontal=True,
                           help="senaryo ≈ 3-6 dk · kare = + ses ve 4 kare · video ≈ 10-15 dk (bu bilgisayarda)")
+        with st.expander("Ürün fotoğrafı ekle (isteğe bağlı: reklam videosu için)"):
+            foto = st.file_uploader("Ürün fotoğrafı", type=["jpg", "jpeg", "png", "webp"])
+            urun_kutu = st.text_input("Ürün bölgesi (isteğe bağlı) x1,y1,x2,y2", placeholder="fotoğrafta bacak/el gibi başka şeyler varsa",
+                                      help="Boş bırakırsan fotoğrafta öne çıkan nesneyi keser. Ürünün yanında başka şeyler varsa ürünün kutusunu ver.")
+            if foto:
+                st.image(foto, caption="Yüklenen fotoğraf", width=220)
         hazir = kaynak.strip() and atif.strip() and re.fullmatch(r"[a-z0-9-]+", slug or "")
         if not hazir:
             st.info("Kaynak, atıf ve küçük harf/rakam/tireden oluşan bir slug gerekli.")
@@ -128,7 +136,11 @@ with yeni:
         kp = vd / "kaynak.txt"
         kp.write_text(kaynak, encoding="utf-8")
         komut = [sys.executable, "-u", "src/ajan.py", "--slug", slug, "--kaynak", str(kp), "--atif", atif,
-                 "--dil", dil, "--stil", stil, "--sadece", sadece]
+                 "--dil", dil, "--stil", stil, "--sadece", sadece, "--kip", kip]
+        if foto:
+            fp = vd / ("urun_kaynak" + Path(foto.name).suffix.lower())
+            fp.write_bytes(foto.getvalue())
+            komut += ["--urun", str(fp)] + (["--urun_kutu", urun_kutu.strip()] if re.fullmatch(r"\d+,\d+,\d+,\d+", urun_kutu.strip()) else [])
         kutu = st.status("Ajan çalışıyor…", expanded=True)
         satirlar = []
         alan = kutu.empty()

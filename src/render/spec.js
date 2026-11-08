@@ -5,7 +5,18 @@ const L = require('./lib');
 const { wat, person, car, coin, house, book, giftBox, bigX, ground, text, stamp, label, bubble, prog, backOut, clamp, lerp, easeOut } = L;
 
 const P = require('./props');
-const VOCAB = ['title', 'stamp', 'label', 'person', 'row', 'counter', 'cross', 'bubble', 'walk', 'icon', 'chart', 'split', 'pair', 'crowd'];
+const VOCAB = ['title', 'stamp', 'label', 'person', 'row', 'counter', 'cross', 'bubble', 'walk', 'icon', 'chart', 'split', 'pair', 'crowd', 'photo'];
+// 'photo': dışarıdan verilen ürün görseli (src/urun.py ile arka planı silinmiş şeffaf PNG). Yol depo köküne göre.
+const fs = require('fs'), path = require('path');
+const KOK = path.resolve(__dirname, '../..');
+const _img = {};
+function imgData(src) {
+  if (_img[src]) return _img[src];
+  const p = path.isAbsolute(src) ? src : path.join(KOK, src);
+  const buf = fs.readFileSync(p);
+  const w = buf.readUInt32BE(16), h = buf.readUInt32BE(20);   // PNG IHDR
+  return (_img[src] = { uri: 'data:image/png;base64,' + buf.toString('base64'), w, h });
+}
 const ITEMS = { car: (st, s, lit) => car(st, 0, 0, s, 1, lit), coin: (st, s, lit) => coin(st, 0, 0, s * 1.6, lit), house: (st, s) => house(st, 0, 0, s), book: (st, s, lit) => book(st, 0, 0, s, lit ? 1 : 0), gift: (st, s) => giftBox(st, 0, 0, s) };
 for (const n of P.NAMES) ITEMS[n] = (st, s, lit, t = 0) => P.PROPS[n](st, s, lit, t);
 const EXPR = ['neutral', 'happy', 'sad', 'angry', 'surprised', 'smug', 'worried', 'fear'];
@@ -40,6 +51,20 @@ function compile(spec) {
           const a = easeOut(prog(t, wat(T, sc.line, e.at), e.until ? Math.max(.3, wat(T, sc.line, e.until) - wat(T, sc.line, e.at)) : 1));
           const dec = (String(e.to).split('.')[1] || '').length, v = lerp(e.from || 0, e.to, a).toFixed(dec);
           out += pop(x, Y[e.y] ?? Y.mid, at(e.at, .25), text(st, 0, 0, e.size || 220, `${v}${e.suffix || ''}`, { fill: st.accent }));
+        }
+        else if (e.type === 'photo') {
+          const im = imgData(e.src), H = e.size || (portrait ? (hasPerson ? 380 : 620) : 460), Wd = H * im.w / im.h;
+          const a = at(e.at, .5), tt = Math.max(0, t - wat(T, sc.line, e.at));
+          if (a > 0) {
+            const m = e.motion || 'pop';
+            const dy = m === 'float' ? Math.sin(tt * 2.2) * 14 : 0;
+            const sx = m === 'spin' ? Math.cos(Math.min(tt, 1.2) * Math.PI * 2 / 1.2) : 1;   // bir tam tur, sonra durur
+            const dx = m === 'slide' ? (1 - easeOut(a)) * W * .6 : 0;
+            const sc2 = m === 'slide' ? 1 : backOut(a);
+            const cy = Y[e.y] ?? (hasPerson ? Y.top : Y.mid);
+            const shadow = `<ellipse cx="0" cy="${H * .48}" rx="${Wd * .38}" ry="${H * .05}" fill="${st.ink}" opacity=".18"/>`;
+            out += `<g transform="translate(${x + dx},${cy + dy}) scale(${sc2})" opacity="${clamp(a * 3)}">${shadow}<g transform="scale(${sx},1)"><image href="${im.uri}" x="${-Wd / 2}" y="${-H / 2}" width="${Wd}" height="${H}" preserveAspectRatio="xMidYMid meet"/></g></g>`;
+          }
         }
         else if (e.type === 'icon') {
           const lit = e.lit_at ? t > wat(T, sc.line, e.lit_at) - .1 : !!e.lit;
@@ -96,6 +121,7 @@ function validate(spec, script) {
       if (e.type === 'person' && e.expr && !EXPR.includes(e.expr)) errs.push(`${sc.line}: expr "${e.expr}" unknown (use ${EXPR.join(', ')})`);
       if (e.type === 'person' && e.hair && !HAIR.includes(e.hair)) errs.push(`${sc.line}: hair "${e.hair}" unknown`);
       if (['title', 'stamp', 'label', 'bubble'].includes(e.type) && (!e.text || e.text.length > 22)) errs.push(`${sc.line}: ${e.type} text missing or longer than 22 chars`);
+      if (e.type === 'photo' && (!e.src || !fs.existsSync(path.isAbsolute(e.src) ? e.src : path.join(KOK, e.src)))) errs.push(`${sc.line}: photo src missing or file not found`);
       if (e.type === 'counter' && typeof e.to !== 'number') errs.push(`${sc.line}: counter needs numeric "to"`);
       const nums = (ids.get(sc.line).replace(/,/g, '').match(/\d+(?:\.\d+)?/g) || []).map(Number);
       if (e.type === 'counter' && typeof e.to === 'number' && !nums.includes(e.to)) errs.push(`${sc.line}: counter to=${e.to} is not a number spoken in the line (spoken: ${nums.join(', ') || 'none'})`);

@@ -34,6 +34,18 @@ python src/ajan.py --slug 920-example --kaynak source.txt --atif "Author (year),
 
 One video takes about 12-27 minutes on this computer (GTX 1650, 4 GB).
 
+## Product ads: from a photo to a video
+Give the agent a product photo and it cuts the product out and places it inside the line animation:
+- **Cutout** (`src/urun.py`): removes the background with a local model (rembg), trims empty edges and writes a transparent PNG. If the photo also shows legs or hands, `--kutu x1,y1,x2,y2` points it at the product; the automatic cutter takes the most prominent object but doesn't know which one is the product.
+- **In the scene** there is a new `photo` element: the product slides in, floats, spins or pops up, still tied to a spoken word.
+- **Ad mode** (`--kip reklam`): writes a 5-6 line ad script. The source text is the product description; inventing prices, discounts, materials or delivery promises is forbidden, and the checker model enforces it.
+- **The panel** has an "Add product photo" section and a "Product ad" option.
+
+```bash
+python src/urun.py photo.jpg product.png --kutu 140,270,580,640
+python src/ajan.py --slug 960-boot --kaynak product_description.txt --atif "Brand" --kip reklam --urun photo.jpg --stil gece
+```
+
 ## Examples
 | Video | Source | Style | What happened |
 |---|---|---|---|
@@ -58,7 +70,7 @@ One video takes about 12-27 minutes on this computer (GTX 1650, 4 GB).
 | Rate assigned to the wrong group | **passed** | **caught** |
 | Generalization not in the source | passed | caught |
 
-**2. The model was stubborn, so code repaired it.** In the scene recipe, the model tied animations to word groups like "were observed". The check caught it, but the model failed to fix it in 3 tries. I did two things: I put the list of allowed words for each line into the prompt, and I wrote a repair step that picks the first word of the group that appears in the line. In the same way, when it asks for objects that are not in the library ("billboard", "slot"), they now become a title that shows that word on screen, so the meaning is kept.
+**2. The model was stubborn, so code repaired it.** In the scene recipe, the model tied animations to word groups like "were observed". The check caught it, but the model failed to fix it in 3 tries. I did two things: I put the list of allowed words for each line into the prompt, and I wrote a repair step that picks the first word of the group that appears in the line. In the same way, when it asks for objects that are not in the library ("billboard", "slot"), they now become a title that shows that word on screen, so the meaning is kept. The same logic now repairs two more stubborn errors: if a scene uses more than two highlights, the extras are toned down; if the model writes no scene for a line, a title scene with that line's key word is added. I caught both while running the video agent under [Nöbetçi](https://github.com/emirhnnnk-lab/nobetci).
 
 **3. Some errors are only caught by a human eye.** The first video's frames had a number that wasn't in the source and a wrongly split subtitle; none of them were caught by the automatic checks. That's why I added the check-frames step; a human looks before anything is published.
 
