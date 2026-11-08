@@ -103,9 +103,9 @@ Kaynaklar PubMed'den çekilen özetler, ajana sadece özet metni verildi:
 - **Kaynağın kendisi:** Mueller ve Oppenheimer (2014) çalışmasının sonraki tekrarlarında sonuçlar tutarsız çıktı ve PubMed kaydında bir düzeltme notu var. Ajan sadece özeti gördüğü için bunu bilemez. Hangi kaynağın kullanılacağına insan karar vermeli.
 
 ## Ajanın çizim dağarcığı
-İlk sürümde ajanın elinde 9 öğe vardı: kişi, araba, para, ev, kitap, hediye, sayaç, çarpı ve balon. Trafik çalışmasını anlatmaya yetiyordu, ama uyku, dikkat ya da para gibi konularda ajan doğru görseli bulamayıp her şeyi yazıyla geçiştiriyordu. Şu an 14 sahne öğesi ve 17 nesne var:
+İlk sürümde ajanın elinde 9 öğe vardı: kişi, araba, para, ev, kitap, hediye, sayaç, çarpı ve balon. Trafik çalışmasını anlatmaya yetiyordu, ama uyku, dikkat ya da para gibi konularda ajan doğru görseli bulamayıp her şeyi yazıyla geçiştiriyordu. Şu an 14 sahne öğesi ve 20 nesne var:
 - **Sahne öğeleri:** başlık, damga, etiket, kişi, yürüyen kişi, sıra, sayaç, çarpı, balon, **ikon, grafik (yükselen / düşen / çubuk), ikiye bölünmüş karşılaştırma ekranı, karşılıklı iki kişi, kalabalık**
-- **Nesneler:** araba, para, ev, kitap, hediye, **telefon, saat, beyin, kalp, ampul, kilit, kupa, terazi, dünya, banknot, hap, yatak**
+- **Nesneler:** araba, para, ev, kitap, hediye, **telefon, saat, beyin, kalp, ampul, kilit, kupa, terazi, dünya, banknot, hap, yatak, laptop, kalem, göz**
 
 Yeni nesneler (`src/render/props.js`) yalnızca stilin boya rollerini kullanıyor. Bu yüzden 6 stilin hepsinde ayrı bir ayar gerekmeden doğru görünüyor:
 
