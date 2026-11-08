@@ -225,12 +225,21 @@ def urun_garanti(spec, sc, src):
     if not sahneler:
         return []
     hareket = ["slide", "float", "pop", "spin"]
-    hedef = {0, len(sahneler) - 1} | set(range(0, len(sahneler), 2))
+    # boş kalan ya da sadece "uyarılı" nesne içeren sahneler de hedef (08.11: 2. sahne tamamen boştu)
+    bos = {i for i, s in enumerate(sahneler) if not [e for e in s.get("elements", []) if e.get("type") not in ("icon", "row")]}
+    hedef = {0, len(sahneler) - 1} | set(range(0, len(sahneler), 2)) | bos
     n = []
     for i, s in enumerate(sahneler):
         els = s.setdefault("elements", [])
+        if i == 0:  # açılışta ürün satırın ilk kelimesiyle girsin (geç ve küçük giriyordu)
+            for e in els:
+                if e.get("type") == "photo":
+                    w = kelimeler(next((l["text"] for l in sc["lines"] if l["id"] == s.get("line")), ""))
+                    if w and e.get("at") != w[0]: e["at"] = w[0]; n.append(f'{s.get("line")}: ürün satır başına alındı')
         if i not in hedef or any(e.get("type") == "photo" for e in els):
             continue
+        if i in bos:  # ilgisiz ikon/sıra yerine ürün
+            els[:] = [e for e in els if e.get("type") not in ("icon", "row")]
         ilk = next((l["text"] for l in sc["lines"] if l["id"] == s.get("line")), "")
         kel = kelimeler(ilk)
         if not kel:
