@@ -136,8 +136,23 @@ Yeni nesneler (`src/render/props.js`) yalnızca stilin boya rollerini kullanıyo
 ## Teknoloji
 Python · Ollama (qwen2.5 7B + 14B, lokal) · Node.js · resvg-js (SVG → PNG) · Python · edge-tts · ffmpeg
 
-## Çalıştırma
+## Panel: konuyu yaz, videoyu al
+`panel.py` ajanı tarayıcıdan kullanmak için yerel bir Streamlit paneli:
+1. **Konu** kutusuna bir iki cümle yazılır (Türkçe olabilir). Yerel 7B model konuyu İngilizce arama terimine çevirir. Panel bu terimle PubMed'de 4 makale, Wikipedia'da 2 madde bulur.
+2. Kaynaklardan biri seçilir; özet ve atıf otomatik dolar. Makale numarası biliniyorsa doğrudan PubMed ID ile de getirilebilir.
+3. Stil, dil ve üretim seviyesi seçilir: sadece senaryo, kareler ya da tam video. Ajanın adımları canlı akar: kaç deneme yaptı, denetçi neyi yakaladı, neyi onardı.
+4. **Galeri** sekmesinde video, senaryo, kaynak ve ajan kaydı yan yana görünür.
+
+Panel hiçbir yere yükleme yapmaz; yayın kararı insanındır.
+
 ```bash
+pip install streamlit
+streamlit run panel.py
+```
+
+## Çalıştırma (komut satırı)
+```bash
+python src/ajan.py --slug 920-ornek --kaynak kaynak.txt --atif "Yazar (yıl), Dergi" --stil neon --sadece video
 npm install
 python src/tts.py videos/004-crosswalk/script.en.json
 node src/render/render.js videos/004-crosswalk gece en video
