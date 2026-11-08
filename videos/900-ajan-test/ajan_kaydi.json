@@ -1,0 +1,58 @@
+[
+ {
+  "adim": "senaryo",
+  "t": 1794124129.6,
+  "deneme": 1,
+  "hata": 1,
+  "onarim": 0,
+  "ilk": [
+   "l7: not supported by SOURCE (The study does not discuss notions of wealth and morality, it only presents data on unethical behavior.)"
+  ]
+ },
+ {
+  "adim": "senaryo",
+  "t": 1794124315.6,
+  "deneme": 2,
+  "hata": 1,
+  "onarim": 0,
+  "ilk": [
+   "l6: not supported by SOURCE (The line 'This matters for understanding class differences' is an interpretation and not directly supported by the SOURCE.)"
+  ]
+ },
+ {
+  "adim": "senaryo",
+  "t": 1794124467.1,
+  "deneme": 3,
+  "hata": 0,
+  "onarim": 0,
+  "ilk": []
+ },
+ {
+  "adim": "sahne",
+  "t": 1794124551.8,
+  "deneme": 1,
+  "hata": 0,
+  "onarim": 0,
+  "ilk": []
+ },
+ {
+  "adim": "ses",
+  "t": 1794124556.4,
+  "tamam": true
+ },
+ {
+  "adim": "kareler",
+  "t": 1794124561.5,
+  "saniyeler": "2.1,7.4,12.6,17.9"
+ },
+ {
+  "adim": "video",
+  "t": 1794124698.6,
+  "sure_sn": 21.0
+ },
+ {
+  "adim": "bitti",
+  "t": 1794124698.6,
+  "toplam_sn": 732
+ }
+]

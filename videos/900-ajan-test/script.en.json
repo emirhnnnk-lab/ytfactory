@@ -1,0 +1,38 @@
+{
+ "title": "The Wealthy and Unethical",
+ "lines": [
+  {
+   "id": "l1",
+   "text": "Rich people are more likely to be unethical."
+  },
+  {
+   "id": "l2",
+   "text": "A study by Piff and colleagues found this."
+  },
+  {
+   "id": "l3",
+   "text": "They observed drivers at crosswalks in San Francisco."
+  },
+  {
+   "id": "l4",
+   "text": "Higher-status vehicles were more likely to ignore pedestrians."
+  },
+  {
+   "id": "l5",
+   "text": "Out of 152 drivers, 34.9% failed to yield."
+  },
+  {
+   "id": "l6",
+   "text": "This finding highlights class-related differences in behavior.",
+   "gap": 0.4
+  }
+ ],
+ "id": "900-ajan-test",
+ "lang": "en",
+ "voice": "en-US-GuyNeural",
+ "rate": "+0%",
+ "sources": [
+  "Piff et al. (2012). Higher social class predicts increased unethical behavior. PNAS 109(11):4086-4091."
+ ],
+ "uretildi": "ajan (qwen2.5:7b)"
+}

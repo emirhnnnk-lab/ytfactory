@@ -1,0 +1,94 @@
+{
+ "scenes": [
+  {
+   "line": "l1",
+   "elements": [
+    {
+     "type": "person",
+     "at": "rich",
+     "pos": "right",
+     "expr": "smug",
+     "mood_at": "unethical"
+    },
+    {
+     "type": "person",
+     "at": "people",
+     "pos": "left",
+     "expr": "neutral"
+    }
+   ]
+  },
+  {
+   "line": "l2",
+   "elements": [
+    {
+     "type": "stamp",
+     "text": "Piff & Co.",
+     "at": "study",
+     "pos": "top"
+    }
+   ]
+  },
+  {
+   "line": "l3",
+   "elements": [
+    {
+     "type": "row",
+     "item": "car",
+     "n": 4,
+     "at": "drivers",
+     "until": "crosswalks",
+     "grow": true
+    }
+   ]
+  },
+  {
+   "line": "l4",
+   "elements": [
+    {
+     "type": "cross",
+     "at": "vehicles"
+    },
+    {
+     "type": "bubble",
+     "text": "pedestrians",
+     "at": "ignore",
+     "pos": "right"
+    }
+   ]
+  },
+  {
+   "line": "l5",
+   "elements": [
+    {
+     "type": "counter",
+     "to": 34.9,
+     "from": 0,
+     "suffix": "%",
+     "at": "failed",
+     "until": "yield"
+    }
+   ]
+  },
+  {
+   "line": "l6",
+   "elements": [
+    {
+     "type": "title",
+     "text": "Behavioral Differences",
+     "at": "finding",
+     "pos": "center",
+     "y": "mid",
+     "accent": true
+    },
+    {
+     "type": "label",
+     "text": "Class",
+     "at": "classrelated",
+     "pos": "bottom"
+    }
+   ]
+  }
+ ],
+ "_onarim": 0
+}

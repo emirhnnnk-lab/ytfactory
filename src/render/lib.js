@@ -412,7 +412,7 @@ function label(st, x, y, str) {
 // ---------- subtitles ----------
 function chunkLine(str, maxChars = 24) {
   // sentence boundaries first, then balanced word splits for anything longer than two rows
-  const sentences = str.match(/[^.!?:]+[.!?:]+(\s|$)|[^.!?:]+$/g).map(x => x.trim()).filter(Boolean);
+  const sentences = str.split(/(?<=[.!?:])(?!\d)\s+/).map(x => x.trim()).filter(Boolean);   // "34.9%" is not a sentence end
   const out = [];
   for (const sn of sentences) {
     if (sn.length <= maxChars * 2) { out.push(sn); continue; }
