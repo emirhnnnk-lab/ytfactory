@@ -78,9 +78,16 @@ Watch for: a different mechanism or outcome than the source names (e.g. the sour
 Return JSON: {"checks": [{"id": "l1", "supported": true|false, "evidence": "short quote from SOURCE or empty", "problem": "what is wrong, or empty"}]}"""
 
 
-def olgu_denetimi(model, sc, kaynak):
+REKLAM_DENETCI = """You check an AD voice-over against a PRODUCT DESCRIPTION. Ads may use mood, everyday moments and invitations
+(e.g. "a long day in the city", "step out in style"); do NOT flag those. Flag a line ONLY if it makes a concrete PRODUCT CLAIM
+that the description does not support: a price, discount, material, size, colour, feature, guarantee, delivery or health promise,
+or a feature attributed to the wrong product. Brand name and tagline must match the description exactly if used.
+Return JSON: {"checks": [{"id": "l1", "supported": true|false, "evidence": "short quote or empty", "problem": "what is wrong, or empty"}]}"""
+
+
+def olgu_denetimi(model, sc, kaynak, sistem=None):
     satir = "\n".join(l["id"] + ": " + l["text"] for l in sc["lines"])
-    r = llm(model, DENETCI_SISTEM, f"SOURCE:\n{kaynak}\n\nLINES:\n{satir}")
+    r = llm(model, sistem or DENETCI_SISTEM, f"SOURCE:\n{kaynak}\n\nLINES:\n{satir}")
     return [f'{c["id"]}: not supported by SOURCE ({c.get("problem", "")})' for c in r.get("checks", []) if not c.get("supported", True)]
 
 
@@ -211,6 +218,31 @@ def onar(spec, sc):
     return n
 
 
+def urun_garanti(spec, sc, src):
+    """Ürün verildiyse sahnelerin en az yarısında görünmesini kod garanti eder (08.11: model talimata rağmen
+    ürünü hiç kullanmadı). Eksik sahnelere ürün eklenir; hareketler sırayla değişir; ilk ve son sahne her zaman ürünlü."""
+    sahneler = spec.get("scenes", [])
+    if not sahneler:
+        return []
+    hareket = ["slide", "float", "pop", "spin"]
+    hedef = {0, len(sahneler) - 1} | set(range(0, len(sahneler), 2))
+    n = []
+    for i, s in enumerate(sahneler):
+        els = s.setdefault("elements", [])
+        if i not in hedef or any(e.get("type") == "photo" for e in els):
+            continue
+        ilk = next((l["text"] for l in sc["lines"] if l["id"] == s.get("line")), "")
+        kel = kelimeler(ilk)
+        if not kel:
+            continue
+        for e in els:  # ürünü ortaya al, yazıları üste/alta it
+            if e.get("type") in ("title", "stamp"): e["y"] = "top"
+            elif e.get("type") == "label": e["y"] = "low"
+        els.insert(0, {"type": "photo", "src": src, "at": kel[0], "motion": hareket[len(n) % 4], "y": "mid"})
+        n.append(f'{s.get("line")}: ürün eklendi')
+    return n
+
+
 def tekrar(ad, uret, dogrula, deneme=3):
     geri = ""
     for i in range(deneme):
@@ -254,7 +286,7 @@ def main():
     t0 = time.time()
 
     sc = tekrar("senaryo", lambda g: llm(a.model, (REKLAM_SISTEM if a.kip == "reklam" else SENARYO_SISTEM).replace("{dil}", dil), f"SOURCE:\n{kaynak}{g}"),
-                lambda s: senaryo_dogrula(s, kaynak) or olgu_denetimi(a.denetci, s, kaynak))
+                lambda s: senaryo_dogrula(s, kaynak) or olgu_denetimi(a.denetci, s, kaynak, REKLAM_DENETCI if a.kip == "reklam" else None))
     sc.update({"id": a.slug, "lang": a.dil, "voice": SES[a.dil], "rate": "+0%", "sources": [a.atif], "uretildi": f"ajan ({a.model})"})
     (vd / f"script.{a.dil}.json").write_text(json.dumps(sc, ensure_ascii=False, indent=1), encoding="utf-8")
 
@@ -273,6 +305,8 @@ def main():
     SC_AKTIF[0] = sc
     satirlar = "\n".join(l["id"] + ": " + l["text"] + "\n    allowed anchor words: " + ", ".join(kelimeler(l["text"])) for l in sc["lines"])
     spec = tekrar("sahne", lambda g: llm(a.model, sis, f"NARRATION:\n{satirlar}{g}"), lambda s: spec_dogrula(s, sc))
+    if a.urun:
+        log("urun_garanti", eklenen=urun_garanti(spec, sc, rel))
     (vd / "scenes.spec.json").write_text(json.dumps(spec, ensure_ascii=False, indent=1), encoding="utf-8")
     (vd / "scenes.js").write_text("// Ajan tarafından üretilen sahne tarifi; düzen ve zamanlama src/render/spec.js'te.\n"
                                   "module.exports = require('../../src/render/spec')(require('./scenes.spec.json'));\n", encoding="utf-8")
